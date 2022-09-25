@@ -6,6 +6,7 @@ export const enum TopLevelCategory {
 }
 
 export class RatingPageModel {
+  _id: string;
   firstCategory: TopLevelCategory;
   secondCategory: string;
   title: string;
