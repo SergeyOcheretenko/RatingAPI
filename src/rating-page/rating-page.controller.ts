@@ -8,11 +8,14 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { FindRatingPageDto } from './dto/find-rating-page.dto';
 import { RatingPageModel } from './rating-page.model';
 
 @Controller('rating-page')
 export class RatingPageController {
+  constructor(private readonly configSergive: ConfigService) {}
+
   @Post('create')
   async create(@Body() dto: Omit<RatingPageModel, '_id'>) {}
 
