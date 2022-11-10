@@ -1,15 +1,25 @@
-export const enum TopLevelCategory {
-  COURSES,
-  SERVICES,
-  BOOKS,
-  PRODUCTS,
+import { prop } from '@typegoose/typegoose';
+import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
+
+export enum TopLevelCategory {
+  COURSES = 'courses',
+  SERVICES = 'services',
+  BOOKS = 'books',
+  PRODUCTS = 'products',
 }
 
+export interface RatingPageModel extends Base, TimeStamps {}
 export class RatingPageModel {
-  _id: string;
+  @prop({ enum: TopLevelCategory })
   firstCategory: TopLevelCategory;
+
+  @prop()
   secondCategory: string;
+
+  @prop()
   title: string;
+
+  @prop()
   category: string;
   GRC?: {
     count: number;

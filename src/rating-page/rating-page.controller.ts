@@ -14,8 +14,6 @@ import { RatingPageModel } from './rating-page.model';
 
 @Controller('rating-page')
 export class RatingPageController {
-  constructor(private readonly configSergive: ConfigService) {}
-
   @Post('create')
   async create(@Body() dto: Omit<RatingPageModel, '_id'>) {}
 
