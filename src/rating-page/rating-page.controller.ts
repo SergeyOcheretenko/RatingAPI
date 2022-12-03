@@ -8,14 +8,13 @@ import {
   Patch,
   Post,
 } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { FindRatingPageDto } from './dto/find-rating-page.dto';
-import { RatingPageModel } from './rating-page.model';
+import { RatingPage } from './schema/rating-page.schema';
 
 @Controller('rating-page')
 export class RatingPageController {
   @Post('create')
-  async create(@Body() dto: Omit<RatingPageModel, '_id'>) {}
+  async create(@Body() dto: Omit<RatingPage, '_id'>) {}
 
   @Get(':id')
   async get(@Param('id') id: string) {}
@@ -24,7 +23,7 @@ export class RatingPageController {
   async delete(@Param('id') id: string) {}
 
   @Patch(':id')
-  async patch(@Param('id') id: string, @Body() dto: RatingPageModel) {}
+  async patch(@Param('id') id: string, @Body() dto: RatingPage) {}
 
   @HttpCode(200)
   @Post()

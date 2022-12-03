@@ -1,28 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { DocumentType, ModelType } from '@typegoose/typegoose/lib/types';
-import { Types } from 'mongoose';
-import { InjectModel } from 'nestjs-typegoose';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model, Types } from 'mongoose';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
-import { FeedbackModel } from './models/feedback.model';
+import { Feedback, FeedbackDocument } from './schema/feedback.schema';
 
 @Injectable()
 export class FeedbackService {
   constructor(
-    @InjectModel(FeedbackModel)
-    private readonly feedbackModel: ModelType<FeedbackModel>,
+    @InjectModel(Feedback.name)
+    private readonly feedbackModel: Model<FeedbackDocument>,
   ) {}
 
-  async create(body: CreateFeedbackDto): Promise<DocumentType<FeedbackModel>> {
+  async create(body: CreateFeedbackDto): Promise<FeedbackDocument> {
     return this.feedbackModel.create(body);
   }
 
-  async delete(id: string): Promise<DocumentType<FeedbackModel> | null> {
+  async delete(id: string): Promise<FeedbackDocument | null> {
     return this.feedbackModel.findByIdAndDelete(id);
   }
 
-  async findByProductId(
-    productId: string,
-  ): Promise<DocumentType<FeedbackModel>[]> {
+  async findByProductId(productId: string): Promise<FeedbackDocument[]> {
     return this.feedbackModel.find({
       productId: new Types.ObjectId(productId),
     });

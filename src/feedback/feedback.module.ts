@@ -1,18 +1,13 @@
 import { Module } from '@nestjs/common';
-import { TypegooseModule } from 'nestjs-typegoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import { FeedbackController } from './feedback.controller';
-import { FeedbackModel } from './models/feedback.model';
 import { FeedbackService } from './feedback.service';
+import { Feedback, FeedbackSchema } from './schema/feedback.schema';
 
 @Module({
   imports: [
-    TypegooseModule.forFeature([
-      {
-        typegooseClass: FeedbackModel,
-        schemaOptions: {
-          collection: 'Feedback',
-        },
-      },
+    MongooseModule.forFeature([
+      { name: Feedback.name, schema: FeedbackSchema },
     ]),
   ],
   controllers: [FeedbackController],

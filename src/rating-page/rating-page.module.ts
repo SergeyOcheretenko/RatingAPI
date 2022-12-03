@@ -1,18 +1,11 @@
 import { Module } from '@nestjs/common';
-import { TypegooseModule } from 'nestjs-typegoose';
+import { MongooseModule } from '@nestjs/mongoose';
 import { RatingPageController } from './rating-page.controller';
-import { RatingPageModel } from './rating-page.model';
+import { RatingPage } from './schema/rating-page.schema';
 
 @Module({
   imports: [
-    TypegooseModule.forFeature([
-      {
-        typegooseClass: RatingPageModel,
-        schemaOptions: {
-          collection: 'RatingPage',
-        },
-      },
-    ]),
+    MongooseModule.forFeature([{ name: RatingPage.name, schema: RatingPage }]),
   ],
   controllers: [RatingPageController],
 })
