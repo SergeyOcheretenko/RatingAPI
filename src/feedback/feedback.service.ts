@@ -24,4 +24,10 @@ export class FeedbackService {
       productId: new Types.ObjectId(productId),
     });
   }
+
+  async deleteByProductId(productId: string) {
+    return this.feedbackModel.deleteMany({
+      productId: new Types.ObjectId(productId),
+    });
+  }
 }
