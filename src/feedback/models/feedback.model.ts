@@ -2,8 +2,8 @@ import { prop } from '@typegoose/typegoose';
 import { Base, TimeStamps } from '@typegoose/typegoose/lib/defaultClasses';
 import { Types } from 'mongoose';
 
-export interface ReviewModel extends Base, TimeStamps {}
-export class ReviewModel {
+export interface FeedbackModel extends Base, TimeStamps {}
+export class FeedbackModel {
   @prop()
   name: string;
 

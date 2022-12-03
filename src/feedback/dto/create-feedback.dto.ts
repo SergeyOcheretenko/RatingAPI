@@ -1,7 +1,7 @@
-export class CreateReviewDto {
+export class CreateFeedbackDto {
   name: string;
   title: string;
-  descriptio: string;
+  description: string;
   rating: number;
   productId: string;
 }

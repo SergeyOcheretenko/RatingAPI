@@ -27,6 +27,7 @@ function getMongoOptions() {
 export async function getMongoConfig(
   configService: ConfigService,
 ): Promise<TypegooseModuleOptions> {
+  console.log(getMongoString(configService));
   return {
     uri: getMongoString(configService),
     ...getMongoOptions(),

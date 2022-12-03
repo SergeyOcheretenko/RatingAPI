@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { RatingPageModule } from './rating-page/rating-page.module';
 import { ProductModule } from './product/product.module';
-import { ReviewModule } from './review/review.module';
+import { FeedbackModule } from './feedback/feedback.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypegooseModule } from 'nestjs-typegoose';
 import { getMongoConfig } from './config/mongo.config';
@@ -20,7 +20,7 @@ import { getMongoConfig } from './config/mongo.config';
     AuthModule,
     RatingPageModule,
     ProductModule,
-    ReviewModule,
+    FeedbackModule,
   ],
   controllers: [AppController],
   providers: [AppService],
