@@ -19,6 +19,10 @@ export class FeedbackService {
     return this.feedbackModel.findByIdAndDelete(id);
   }
 
+  async getAll() {
+    return this.feedbackModel.find();
+  }
+
   async findByProductId(productId: string): Promise<FeedbackDocument[]> {
     return this.feedbackModel.find({
       productId: new Types.ObjectId(productId),

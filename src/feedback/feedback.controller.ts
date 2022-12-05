@@ -39,4 +39,9 @@ export class FeedbackController {
   async getByProduct(@Param('productId') productId: string) {
     return this.feedbackService.findByProductId(productId);
   }
+
+  @Get()
+  async getAll() {
+    return this.feedbackService.getAll();
+  }
 }
