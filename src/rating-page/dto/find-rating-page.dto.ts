@@ -1,4 +1,4 @@
-import { TopLevelCategory } from '../rating-page.model';
+import { TopLevelCategory } from '../schema/rating-page.schema';
 
 export class FindRatingPageDto {
   firstCategory: TopLevelCategory;
