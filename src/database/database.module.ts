@@ -11,7 +11,6 @@ import { DatabaseService } from './database.service';
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
         const env = configService.getEnvironment();
-        console.log(env === Environment.DEV);
         return env === Environment.DEV
           ? configService.getDevelopMongoConfig()
           : configService.getProductionMongoConfig();
