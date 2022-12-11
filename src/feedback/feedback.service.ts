@@ -11,12 +11,15 @@ export class FeedbackService {
     private readonly feedbackModel: Model<FeedbackDocument>,
   ) {}
 
-  async create(body: CreateFeedbackDto): Promise<Feedback> {
-    const feedback = new this.feedbackModel(body);
+  async create(feedbackData: CreateFeedbackDto): Promise<Feedback> {
+    const feedback = new this.feedbackModel({
+      ...feedbackData,
+      productId: new Types.ObjectId(feedbackData.productId),
+    });
     return feedback.save();
   }
 
-  async delete(id: string): Promise<Feedback | null> {
+  async delete(id: Types.ObjectId): Promise<Feedback | null> {
     return this.feedbackModel.findByIdAndDelete(id);
   }
 
@@ -24,7 +27,7 @@ export class FeedbackService {
     return this.feedbackModel.find();
   }
 
-  async findByProductId(productId: string): Promise<Feedback[]> {
+  async findByProductId(productId: Types.ObjectId): Promise<Feedback[]> {
     return this.feedbackModel.find({
       productId: new Types.ObjectId(productId),
     });

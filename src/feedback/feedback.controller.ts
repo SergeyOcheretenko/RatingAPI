@@ -9,6 +9,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
+import { Types } from 'mongoose';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { FEEDBACK_NOT_FOUND_MESSAGE } from './feedback.constants';
 import { FeedbackService } from './feedback.service';
@@ -20,8 +21,8 @@ export class FeedbackController {
   ) {}
 
   @Post('create')
-  async create(@Body() body: CreateFeedbackDto) {
-    return this.feedbackService.create(body);
+  async create(@Body() feedbackData: CreateFeedbackDto) {
+    return this.feedbackService.create(feedbackData);
   }
 
   @Get()
@@ -30,12 +31,12 @@ export class FeedbackController {
   }
 
   @Get('byProduct/:productId')
-  async getByProduct(@Param('productId') productId: string) {
+  async getByProduct(@Param('productId') productId: Types.ObjectId) {
     return this.feedbackService.findByProductId(productId);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id') id: Types.ObjectId) {
     const deletedFeedback = await this.feedbackService.delete(id);
 
     if (!deletedFeedback) {
