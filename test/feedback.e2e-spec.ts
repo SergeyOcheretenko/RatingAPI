@@ -6,6 +6,7 @@ import { Collection, disconnect, Types } from 'mongoose';
 import { DatabaseService } from '../src/database/database.service';
 import { FeedbackService } from '../src/feedback/feedback.service';
 import { CreateFeedbackDto } from '../src/feedback/dto/create-feedback.dto';
+import { FEEDBACK_NOT_FOUND_MESSAGE } from '../src/feedback/feedback.constants';
 
 describe('FeedbackController (e2e)', () => {
   let app: INestApplication;
@@ -117,6 +118,71 @@ describe('FeedbackController (e2e)', () => {
       expect(response.body).toHaveLength(2);
       expect(response.body[0]).toMatchObject(FEEDBACK_2);
       expect(response.body[1]).toMatchObject(FEEDBACK_3);
+    });
+  });
+
+  describe('/feedback/:id (DELETE)', () => {
+    beforeEach(async () => {
+      await feedbacksCollection.insertMany([
+        FEEDBACK_1,
+        FEEDBACK_2,
+        FEEDBACK_3,
+      ]);
+    });
+
+    it('Should delete feedback by id', async () => {
+      const feedback = await feedbacksCollection.findOne({
+        name: FEEDBACK_1.name,
+      });
+
+      const response = await request(httpServer).delete(
+        `/feedback/${feedback._id}`,
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.body).toMatchObject(FEEDBACK_1);
+
+      const existentFeedbacks = await feedbacksCollection.find().toArray();
+
+      expect(existentFeedbacks).toHaveLength(2);
+      expect(existentFeedbacks[0]).toMatchObject(FEEDBACK_2);
+      expect(existentFeedbacks[1]).toMatchObject(FEEDBACK_3);
+    });
+
+    it("Should throw NOT_FOUND error when feedback doesn't exist", async () => {
+      await feedbacksCollection.deleteMany({});
+
+      const response = await request(httpServer).delete(
+        `/feedback/${'1'.repeat(24)}`,
+      );
+
+      expect(response.status).toBe(404);
+      expect(response.body.statusCode).toBe(404);
+      expect(response.body.message).toBe(FEEDBACK_NOT_FOUND_MESSAGE);
+    });
+  });
+
+  describe('/feedback/byProduct/:id (DELETE)', () => {
+    beforeEach(async () => {
+      await feedbacksCollection.insertMany([
+        FEEDBACK_1,
+        FEEDBACK_2,
+        FEEDBACK_3,
+      ]);
+    });
+
+    it('Should delete all feedbacks with received product id', async () => {
+      const response = await request(httpServer).delete(
+        `/feedback/byProduct/${'2'.repeat(24)}`,
+      );
+
+      expect(response.status).toBe(200);
+      expect(response.body.deletedCount).toBe(2);
+
+      const existentFeedbacks = await feedbacksCollection.find().toArray();
+
+      expect(existentFeedbacks).toHaveLength(1);
+      expect(existentFeedbacks[0]).toMatchObject(FEEDBACK_1);
     });
   });
 });

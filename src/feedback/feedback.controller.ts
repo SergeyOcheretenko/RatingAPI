@@ -45,4 +45,9 @@ export class FeedbackController {
 
     return deletedFeedback;
   }
+
+  @Delete('byProduct/:productId')
+  async deleteByProduct(@Param('productId') productId: Types.ObjectId) {
+    return this.feedbackService.deleteByProductId(productId);
+  }
 }

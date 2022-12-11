@@ -33,7 +33,7 @@ export class FeedbackService {
     });
   }
 
-  async deleteByProductId(productId: string) {
+  async deleteByProductId(productId: Types.ObjectId) {
     return this.feedbackModel.deleteMany({
       productId: new Types.ObjectId(productId),
     });
