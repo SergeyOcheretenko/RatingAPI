@@ -24,6 +24,16 @@ export class FeedbackController {
     return this.feedbackService.create(body);
   }
 
+  @Get()
+  async getAll() {
+    return this.feedbackService.getAll();
+  }
+
+  @Get('byProduct/:productId')
+  async getByProduct(@Param('productId') productId: string) {
+    return this.feedbackService.findByProductId(productId);
+  }
+
   @Delete(':id')
   async delete(@Param('id') id: string) {
     const deletedFeedback = await this.feedbackService.delete(id);
@@ -33,15 +43,5 @@ export class FeedbackController {
     }
 
     return deletedFeedback;
-  }
-
-  @Get('byProduct/:productId')
-  async getByProduct(@Param('productId') productId: string) {
-    return this.feedbackService.findByProductId(productId);
-  }
-
-  @Get()
-  async getAll() {
-    return this.feedbackService.getAll();
   }
 }
