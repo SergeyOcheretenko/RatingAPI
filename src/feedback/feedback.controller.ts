@@ -31,12 +31,12 @@ export class FeedbackController {
   }
 
   @Get('byProduct/:productId')
-  async getByProduct(@Param('productId') productId: Types.ObjectId) {
+  async getByProduct(@Param('productId') productId: string) {
     return this.feedbackService.findByProductId(productId);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: Types.ObjectId) {
+  async delete(@Param('id') id: string) {
     const deletedFeedback = await this.feedbackService.delete(id);
 
     if (!deletedFeedback) {
@@ -47,7 +47,7 @@ export class FeedbackController {
   }
 
   @Delete('byProduct/:productId')
-  async deleteByProduct(@Param('productId') productId: Types.ObjectId) {
+  async deleteByProduct(@Param('productId') productId: string) {
     return this.feedbackService.deleteByProductId(productId);
   }
 }

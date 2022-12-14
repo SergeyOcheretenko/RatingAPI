@@ -19,7 +19,7 @@ export class FeedbackService {
     return feedback.save();
   }
 
-  async delete(id: Types.ObjectId): Promise<Feedback | null> {
+  async delete(id: string): Promise<Feedback | null> {
     return this.feedbackModel.findByIdAndDelete(id);
   }
 
@@ -27,13 +27,13 @@ export class FeedbackService {
     return this.feedbackModel.find();
   }
 
-  async findByProductId(productId: Types.ObjectId): Promise<Feedback[]> {
+  async findByProductId(productId: string): Promise<Feedback[]> {
     return this.feedbackModel.find({
       productId: new Types.ObjectId(productId),
     });
   }
 
-  async deleteByProductId(productId: Types.ObjectId) {
+  async deleteByProductId(productId: string) {
     return this.feedbackModel.deleteMany({
       productId: new Types.ObjectId(productId),
     });
