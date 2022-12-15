@@ -5,13 +5,12 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main" ]
+    branches: ['main']
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -30,5 +29,3 @@ jobs:
         run: npm ci
       - name: Run unit-tests
         run: npm run test
-      - name: Run e2e-tests
-        run: npm run test:e2e
