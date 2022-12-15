@@ -3,7 +3,7 @@ import { FeedbackController } from '../../../src/feedback/feedback.controller';
 import { FeedbackService } from '../../../src/feedback/feedback.service';
 import { MockFeedbackService } from '../../mocks/feedback/feedback.service.mock';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../../src/feedback/feedback.constants';
+import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../../src/feedback/dto/exceptions.constants';
 
 describe('FeedbackController tests', () => {
   let feedbackController: FeedbackController;

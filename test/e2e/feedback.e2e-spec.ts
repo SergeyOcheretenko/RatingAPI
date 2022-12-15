@@ -6,7 +6,7 @@ import { Collection, disconnect, Types } from 'mongoose';
 import { DatabaseService } from '../../src/database/database.service';
 import { FeedbackService } from '../../src/feedback/feedback.service';
 import { CreateFeedbackDto } from '../../src/feedback/dto/create-feedback.dto';
-import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../src/feedback/feedback.constants';
+import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../src/feedback/dto/exceptions.constants';
 
 describe('FeedbackController (e2e)', () => {
   let app: INestApplication;
