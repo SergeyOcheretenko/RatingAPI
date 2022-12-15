@@ -5,18 +5,17 @@ name: Node.js CI
 
 on:
   push:
-    branches: ['main', 'feat/docker']
+    branches: ['main']
   pull_request:
-    branches: ['main', 'feat/docker']
+    branches: ['main']
 
 jobs:
-  docker:
-    timeout-minutes: 10
+  build:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [16.x, 18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -26,12 +25,7 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - name: Build and run container
-        run: docker-compose -f "docker-compose.yml" up -d --build
+      - name: Install dependencies
+        run: npm ci
       - name: Run unit-tests
-        run: docker exec -it ratingapi_ratingapi_1  npm run test
-      - name: Run e2e-tests
-        run: docker exec -it ratingapi_ratingapi_1  npm run test:e2e
-      - name: Stop containers
-        if: always()
-        run: docker-compose -f "docker-compose.yml" down
+        run: npm run test

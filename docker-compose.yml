@@ -9,7 +9,6 @@ services:
     environment:
       - NODE_ENV=prod
       - PRODUCTION_MONGO_URL=mongodb://admin:admin@mongo:27017/admin
-      - DEVELOP_MONGO_URL=mongodb://admin:admin@mongo:27017/admin
     ports:
       - 3000:3000
     depends_on:
