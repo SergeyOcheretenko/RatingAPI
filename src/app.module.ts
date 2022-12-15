@@ -5,18 +5,13 @@ import { AuthModule } from './auth/auth.module';
 import { RatingPageModule } from './rating-page/rating-page.module';
 import { ProductModule } from './product/product.module';
 import { FeedbackModule } from './feedback/feedback.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { getMongoConfig } from './config/mongo.config';
-import { MongooseModule } from '@nestjs/mongoose';
+import { DatabaseModule } from './database/database.module';
+import { ConfigModule } from './config/config.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: getMongoConfig,
-    }),
+    ConfigModule,
+    DatabaseModule,
     AuthModule,
     RatingPageModule,
     ProductModule,

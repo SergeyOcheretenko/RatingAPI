@@ -1,8 +1,9 @@
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 export type FeedbackDocument = Feedback & Document;
 
+@Schema()
 export class Feedback {
   @Prop({ required: true })
   name: string;
