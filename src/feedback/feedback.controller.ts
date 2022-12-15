@@ -20,8 +20,18 @@ export class FeedbackController {
   ) {}
 
   @Post('create')
-  async create(@Body() body: CreateFeedbackDto) {
-    return this.feedbackService.create(body);
+  async create(@Body() feedbackData: CreateFeedbackDto) {
+    return this.feedbackService.create(feedbackData);
+  }
+
+  @Get()
+  async getAll() {
+    return this.feedbackService.getAll();
+  }
+
+  @Get('byProduct/:productId')
+  async getByProduct(@Param('productId') productId: string) {
+    return this.feedbackService.findByProductId(productId);
   }
 
   @Delete(':id')
@@ -35,13 +45,8 @@ export class FeedbackController {
     return deletedFeedback;
   }
 
-  @Get('byProduct/:productId')
-  async getByProduct(@Param('productId') productId: string) {
-    return this.feedbackService.findByProductId(productId);
-  }
-
-  @Get()
-  async getAll() {
-    return this.feedbackService.getAll();
+  @Delete('byProduct/:productId')
+  async deleteByProduct(@Param('productId') productId: string) {
+    return this.feedbackService.deleteByProductId(productId);
   }
 }

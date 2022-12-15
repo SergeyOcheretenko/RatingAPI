@@ -11,8 +11,11 @@ export class FeedbackService {
     private readonly feedbackModel: Model<FeedbackDocument>,
   ) {}
 
-  async create(body: CreateFeedbackDto): Promise<Feedback> {
-    const feedback = new this.feedbackModel(body);
+  async create(feedbackData: CreateFeedbackDto): Promise<Feedback> {
+    const feedback = new this.feedbackModel({
+      ...feedbackData,
+      productId: new Types.ObjectId(feedbackData.productId),
+    });
     return feedback.save();
   }
 

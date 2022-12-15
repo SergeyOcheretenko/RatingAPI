@@ -5,11 +5,12 @@ import { AuthModule } from './auth/auth.module';
 import { RatingPageModule } from './rating-page/rating-page.module';
 import { ProductModule } from './product/product.module';
 import { FeedbackModule } from './feedback/feedback.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from './database/database.module';
+import { ConfigModule } from './config/config.module';
 
 @Module({
   imports: [
+    ConfigModule,
     DatabaseModule,
     AuthModule,
     RatingPageModule,

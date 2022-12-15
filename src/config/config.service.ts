@@ -9,7 +9,7 @@ import {
 import { plainToClass, Transform } from 'class-transformer';
 
 export enum Environment {
-  DEV = 'dev',
+  TEST = 'test',
   PROD = 'prod',
 }
 
