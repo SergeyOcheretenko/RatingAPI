@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x, 18.x]
+        node-version: [18.x]
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
@@ -26,12 +26,12 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-      - name: Start containers
+      - name: Build and run container
         run: docker-compose -f "docker-compose.yml" up -d --build
       - name: Run unit-tests
-        run: docker exec -it ratingapi-ratingapi-1 npm run test
+        run: docker exec -it ratingapi_ratingapi_1  npm run test
       - name: Run e2e-tests
-        run: docker exec -it ratingapi-ratingapi-1 npm run test:e2e
+        run: docker exec -it ratingapi_ratingapi_1  npm run test:e2e
       - name: Stop containers
         if: always()
         run: docker-compose -f "docker-compose.yml" down
