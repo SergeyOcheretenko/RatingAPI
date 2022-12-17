@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../../src/app.module';
 import { Collection, disconnect, Types } from 'mongoose';
@@ -19,6 +19,7 @@ describe('FeedbackController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
     feedbacksCollection = moduleFixture
@@ -95,6 +96,166 @@ describe('FeedbackController (e2e)', () => {
         _id: new Types.ObjectId(response.body._id),
       });
       expect(createdFeedback).toMatchObject(FEEDBACK_1);
+    });
+
+    it("Should throw the error when name isn't a string", async () => {
+      const response = await request(httpServer)
+        .post('/feedback/create')
+        .send({ ...CREATE_FEEDBACK_1, name: 123 });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        error: 'Bad Request',
+      });
+
+      const feedbacks = await feedbacksCollection.find().toArray();
+      expect(feedbacks).toEqual([]);
+    });
+
+    it("Should throw the error when name isn't specified in body", async () => {
+      const { title, description, rating, productId } = CREATE_FEEDBACK_1;
+
+      const response = await request(httpServer)
+        .post('/feedback/create')
+        .send({ title, description, rating, productId });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        error: 'Bad Request',
+      });
+
+      const feedbacks = await feedbacksCollection.find().toArray();
+      expect(feedbacks).toEqual([]);
+    });
+
+    it("Should throw the error when title isn't a string", async () => {
+      const response = await request(httpServer)
+        .post('/feedback/create')
+        .send({ ...CREATE_FEEDBACK_1, title: 123 });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        error: 'Bad Request',
+      });
+
+      const feedbacks = await feedbacksCollection.find().toArray();
+      expect(feedbacks).toEqual([]);
+    });
+
+    it("Should throw the error when title isn't specified in body", async () => {
+      const { name, description, rating, productId } = CREATE_FEEDBACK_1;
+
+      const response = await request(httpServer)
+        .post('/feedback/create')
+        .send({ name, description, rating, productId });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        error: 'Bad Request',
+      });
+
+      const feedbacks = await feedbacksCollection.find().toArray();
+      expect(feedbacks).toEqual([]);
+    });
+
+    it("Should throw the error when rating isn't a number", async () => {
+      const response = await request(httpServer)
+        .post('/feedback/create')
+        .send({ ...CREATE_FEEDBACK_1, rating: 'Not number' });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        error: 'Bad Request',
+      });
+
+      const feedbacks = await feedbacksCollection.find().toArray();
+      expect(feedbacks).toEqual([]);
+    });
+
+    it("Should throw the error when rating isn't specified in body", async () => {
+      const { name, description, title, productId } = CREATE_FEEDBACK_1;
+
+      const response = await request(httpServer)
+        .post('/feedback/create')
+        .send({ name, description, title, productId });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        error: 'Bad Request',
+      });
+
+      const feedbacks = await feedbacksCollection.find().toArray();
+      expect(feedbacks).toEqual([]);
+    });
+
+    it("Should throw the error when description isn't a string", async () => {
+      const response = await request(httpServer)
+        .post('/feedback/create')
+        .send({ ...CREATE_FEEDBACK_1, description: 123 });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        error: 'Bad Request',
+      });
+
+      const feedbacks = await feedbacksCollection.find().toArray();
+      expect(feedbacks).toEqual([]);
+    });
+
+    it("Should throw the error when description isn't specified in body", async () => {
+      const { name, rating, title, productId } = CREATE_FEEDBACK_1;
+
+      const response = await request(httpServer)
+        .post('/feedback/create')
+        .send({ name, rating, title, productId });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        error: 'Bad Request',
+      });
+
+      const feedbacks = await feedbacksCollection.find().toArray();
+      expect(feedbacks).toEqual([]);
+    });
+
+    it("Should throw the error when productId isn't a string", async () => {
+      const response = await request(httpServer)
+        .post('/feedback/create')
+        .send({ ...CREATE_FEEDBACK_1, productId: 123 });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        error: 'Bad Request',
+      });
+
+      const feedbacks = await feedbacksCollection.find().toArray();
+      expect(feedbacks).toEqual([]);
+    });
+
+    it("Should throw the error when productId isn't specified in body", async () => {
+      const { name, rating, title, description } = CREATE_FEEDBACK_1;
+
+      const response = await request(httpServer)
+        .post('/feedback/create')
+        .send({ name, rating, title, description });
+
+      expect(response.status).toBe(400);
+      expect(response.body).toMatchObject({
+        statusCode: 400,
+        error: 'Bad Request',
+      });
+
+      const feedbacks = await feedbacksCollection.find().toArray();
+      expect(feedbacks).toEqual([]);
     });
   });
 
