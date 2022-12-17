@@ -10,7 +10,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
-import { FEEDBACK_NOT_FOUND_MESSAGE } from './feedback.constants';
+import { FEEDBACK_NOT_FOUND_MESSAGE } from './dto/exceptions.constants';
 import { FeedbackService } from './feedback.service';
 
 @Controller('feedback')
