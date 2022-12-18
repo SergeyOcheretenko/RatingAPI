@@ -5,6 +5,7 @@ import {
   IsOptional,
   validateSync,
   IsEnum,
+  isNotEmpty,
 } from 'class-validator';
 import { plainToClass, Transform } from 'class-transformer';
 
@@ -25,6 +26,10 @@ export class EnvironmentVariables {
   @IsString()
   @IsOptional()
   DEVELOP_MONGO_URL?: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JWT_SECRET: string;
 }
 
 @Injectable()
@@ -52,6 +57,12 @@ export class ConfigService implements OnModuleInit {
       uri: this.env.DEVELOP_MONGO_URL,
       useNewUrlParser: true,
       useUnifiedTopology: true,
+    };
+  }
+
+  public getJwtConfig() {
+    return {
+      secret: this.env.JWT_SECRET,
     };
   }
 
