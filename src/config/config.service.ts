@@ -5,7 +5,6 @@ import {
   IsOptional,
   validateSync,
   IsEnum,
-  isNotEmpty,
 } from 'class-validator';
 import { plainToClass, Transform } from 'class-transformer';
 

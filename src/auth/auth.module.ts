@@ -6,9 +6,11 @@ import { ConfigService } from '../config/config.service';
 import { UserRepositoryModule } from '../user-repository/user-repository.module';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
+    ConfigModule,
     UserRepositoryModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -19,6 +21,6 @@ import { AuthService } from './auth.service';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
 })
 export class AuthModule {}

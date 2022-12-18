@@ -8,7 +8,9 @@ import {
   Inject,
   Param,
   Post,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { FEEDBACK_NOT_FOUND_MESSAGE } from './dto/exceptions.constants';
 import { FeedbackService } from './feedback.service';
@@ -24,6 +26,7 @@ export class FeedbackController {
     return this.feedbackService.create(feedbackData);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get()
   async getAll() {
     return this.feedbackService.getAll();
@@ -45,6 +48,7 @@ export class FeedbackController {
     return deletedFeedback;
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete('byProduct/:productId')
   async deleteByProduct(@Param('productId') productId: string) {
     return this.feedbackService.deleteByProductId(productId);
