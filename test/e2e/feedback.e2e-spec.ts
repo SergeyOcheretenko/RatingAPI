@@ -8,10 +8,16 @@ import { FeedbackService } from '../../src/feedback/feedback.service';
 import { CreateFeedbackDto } from '../../src/feedback/dto/create-feedback.dto';
 import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../src/feedback/dto/exceptions.constants';
 
+jest.setTimeout(60_000);
+
 describe('FeedbackController (e2e)', () => {
   let app: INestApplication;
-  let feedbacksCollection: Collection;
   let httpServer: any;
+
+  let feedbacksCollection: Collection;
+  let usersCollection: Collection;
+
+  let accessToken: string;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -26,13 +32,29 @@ describe('FeedbackController (e2e)', () => {
       .get<DatabaseService>(DatabaseService)
       .getDatabaseHandle()
       .collection('feedbacks');
+    usersCollection = moduleFixture
+      .get<DatabaseService>(DatabaseService)
+      .getDatabaseHandle()
+      .collection('users');
     httpServer = app.getHttpServer();
 
     await feedbacksCollection.deleteMany({});
+    await usersCollection.deleteMany({});
+
+    await request(httpServer)
+      .post('/auth/register')
+      .send({ email: 'test@gmail.com', password: '12345678' });
+
+    const response = await request(httpServer)
+      .post('/auth/login')
+      .send({ email: 'test@gmail.com', password: '12345678' });
+
+    accessToken = response.body.accessToken;
   });
 
   afterEach(async () => {
     await feedbacksCollection.deleteMany({});
+    await usersCollection.deleteMany({});
   });
 
   afterAll(async () => {
@@ -348,9 +370,9 @@ describe('FeedbackController (e2e)', () => {
     });
 
     it('Should delete all feedbacks with received product id', async () => {
-      const response = await request(httpServer).delete(
-        `/feedback/byProduct/${'2'.repeat(24)}`,
-      );
+      const response = await request(httpServer)
+        .delete(`/feedback/byProduct/${'2'.repeat(24)}`)
+        .set('Authorization', `Bearer ${accessToken}`);
 
       expect(response.status).toBe(200);
       expect(response.body.deletedCount).toBe(2);

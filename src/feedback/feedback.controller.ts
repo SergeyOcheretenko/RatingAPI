@@ -26,7 +26,6 @@ export class FeedbackController {
     return this.feedbackService.create(feedbackData);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Get()
   async getAll() {
     return this.feedbackService.getAll();
