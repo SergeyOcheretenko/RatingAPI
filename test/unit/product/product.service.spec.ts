@@ -40,6 +40,7 @@ describe('ProductService (unit)', () => {
   });
 
   afterEach(async () => {
+    jest.restoreAllMocks();
     await feedbacksCollection.deleteMany({});
     await productsCollection.deleteMany({});
   });

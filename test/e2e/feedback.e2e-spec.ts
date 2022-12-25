@@ -333,9 +333,9 @@ describe('FeedbackController (e2e)', () => {
         name: FEEDBACK_1.name,
       });
 
-      const response = await request(httpServer).delete(
-        `/feedback/${feedback._id}`,
-      );
+      const response = await request(httpServer)
+        .delete(`/feedback/${feedback._id}`)
+        .set('Authorization', `Bearer ${accessToken}`);
 
       expect(response.status).toBe(200);
       expect(response.body).toMatchObject(FEEDBACK_1);
@@ -350,13 +350,28 @@ describe('FeedbackController (e2e)', () => {
     it("Should throw NOT_FOUND error when feedback doesn't exist", async () => {
       await feedbacksCollection.deleteMany({});
 
-      const response = await request(httpServer).delete(
-        `/feedback/${'1'.repeat(24)}`,
-      );
+      const response = await request(httpServer)
+        .delete(`/feedback/${'1'.repeat(24)}`)
+        .set('Authorization', `Bearer ${accessToken}`);
 
       expect(response.status).toBe(404);
       expect(response.body.statusCode).toBe(404);
       expect(response.body.message).toBe(FEEDBACK_NOT_FOUND_MESSAGE);
+    });
+
+    it('Should throw UNAUTHORIZED exception when accessToken not specified', async () => {
+      const response = await request(httpServer).delete(
+        `/feedback/${'1'.repeat(24)}`,
+      );
+
+      expect(response.status).toBe(401);
+
+      const existentFeedbacks = await feedbacksCollection.find().toArray();
+
+      expect(existentFeedbacks).toHaveLength(3);
+      expect(existentFeedbacks[0]).toMatchObject(FEEDBACK_1);
+      expect(existentFeedbacks[1]).toMatchObject(FEEDBACK_2);
+      expect(existentFeedbacks[2]).toMatchObject(FEEDBACK_3);
     });
   });
 
@@ -381,6 +396,21 @@ describe('FeedbackController (e2e)', () => {
 
       expect(existentFeedbacks).toHaveLength(1);
       expect(existentFeedbacks[0]).toMatchObject(FEEDBACK_1);
+    });
+
+    it('Should throw UNAUTHORIZED exception when accessToken not specified', async () => {
+      const response = await request(httpServer).delete(
+        `/feedback/byProduct/${'2'.repeat(24)}`,
+      );
+
+      expect(response.status).toBe(401);
+
+      const existentFeedbacks = await feedbacksCollection.find().toArray();
+
+      expect(existentFeedbacks).toHaveLength(3);
+      expect(existentFeedbacks[0]).toMatchObject(FEEDBACK_1);
+      expect(existentFeedbacks[1]).toMatchObject(FEEDBACK_2);
+      expect(existentFeedbacks[2]).toMatchObject(FEEDBACK_3);
     });
   });
 });
