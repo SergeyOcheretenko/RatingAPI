@@ -5,7 +5,7 @@ import { MockFeedbackService } from '../../mocks/feedback/feedback.service.mock'
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../../src/feedback/dto/exceptions.constants';
 
-describe('FeedbackController tests', () => {
+describe('FeedbackController (unit)', () => {
   let feedbackController: FeedbackController;
   let feedbackService: FeedbackService;
 

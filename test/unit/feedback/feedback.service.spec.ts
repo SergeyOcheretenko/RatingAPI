@@ -6,7 +6,7 @@ import { MockFeedbackModel } from '../../mocks/feedback/schema/feedback.schema.m
 
 jest.mock('../../mocks/feedback/schema/feedback.schema.mock');
 
-describe('FeedbackService tests', () => {
+describe('FeedbackService (unit)', () => {
   let feedbackService: FeedbackService;
   let feedbackModel: Model<FeedbackDocument>;
 

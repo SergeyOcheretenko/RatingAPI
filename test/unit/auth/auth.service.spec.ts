@@ -18,7 +18,7 @@ import { MockUserRepository } from '../../mocks/user-repository/user-repository.
 
 import * as bcryptjs from 'bcryptjs';
 
-describe('AuthService tests', () => {
+describe('AuthService (unit)', () => {
   let authService: AuthService;
   let jwtService: JwtService;
   let userRepository: UserRepository;

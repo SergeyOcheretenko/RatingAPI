@@ -36,6 +36,7 @@ export class FeedbackController {
     return this.feedbackService.findByProductId(productId);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
   async delete(@Param('id') id: string) {
     const deletedFeedback = await this.feedbackService.delete(id);
