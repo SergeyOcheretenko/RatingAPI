@@ -1,4 +1,4 @@
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 class ProductCharacteristic {
@@ -11,6 +11,7 @@ class ProductCharacteristic {
 
 export type ProductDocument = Product & Document;
 
+@Schema()
 export class Product {
   @Prop({ required: true })
   image: string;
@@ -21,14 +22,11 @@ export class Product {
   @Prop({ required: true })
   price: number;
 
-  @Prop({ required: true })
-  oldPrice: number;
+  @Prop({ required: false, default: null })
+  oldPrice?: number;
 
   @Prop({ required: true })
   credit: number;
-
-  @Prop({ required: true })
-  calculatedRating: number;
 
   @Prop({ required: true })
   description: string;
@@ -45,7 +43,7 @@ export class Product {
   @Prop({ required: true, type: [String] })
   tags: string[];
 
-  @Prop({ required: true, _id: false, type: [ProductCharacteristic] })
+  @Prop({ required: true, _id: false, type: ProductCharacteristic })
   characteristics: ProductCharacteristic[];
 }
 
