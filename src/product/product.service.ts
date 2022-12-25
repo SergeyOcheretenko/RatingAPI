@@ -29,7 +29,7 @@ export class ProductService {
       },
       {
         $addFields: {
-          feedbackCount: { $size: '$feedbacks' },
+          feedbacksAmount: { $size: '$feedbacks' },
           rating: { $avg: '$feedbacks.rating' },
         },
       },
@@ -38,31 +38,33 @@ export class ProductService {
   }
 
   async getById(id: string) {
-    return this.productModel.aggregate([
-      {
-        $match: {
-          _id: new Types.ObjectId(id),
+    return (
+      await this.productModel.aggregate([
+        {
+          $match: {
+            _id: new Types.ObjectId(id),
+          },
         },
-      },
-      {
-        $limit: 1,
-      },
-      {
-        $lookup: {
-          from: 'feedbacks',
-          localField: '_id',
-          foreignField: 'productId',
-          as: 'feedbacks',
+        {
+          $limit: 1,
         },
-      },
-      {
-        $addFields: {
-          feedbackCount: { $size: '$feedbacks' },
-          rating: { $avg: '$feedbacks.rating' },
+        {
+          $lookup: {
+            from: 'feedbacks',
+            localField: '_id',
+            foreignField: 'productId',
+            as: 'feedbacks',
+          },
         },
-      },
-      { $unset: 'feedbacks' },
-    ]);
+        {
+          $addFields: {
+            feedbacksAmount: { $size: '$feedbacks' },
+            rating: { $avg: '$feedbacks.rating' },
+          },
+        },
+        { $unset: 'feedbacks' },
+      ])
+    )[0];
   }
 
   async findByCategory({ category, limit }: FindByCategoryDto) {
@@ -90,7 +92,7 @@ export class ProductService {
       },
       {
         $addFields: {
-          feedbackCount: { $size: '$feedbacks' },
+          feedbacksAmount: { $size: '$feedbacks' },
           rating: { $avg: '$feedbacks.rating' },
         },
       },
