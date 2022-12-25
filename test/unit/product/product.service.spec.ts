@@ -9,7 +9,7 @@ import { FindByCategoryDto } from '../../../src/product/dto/find-products.dto';
 
 jest.setTimeout(60_000);
 
-describe('FeedbackController (e2e)', () => {
+describe('ProductService (unit)', () => {
   let app: INestApplication;
   let productService: ProductService;
 
@@ -19,7 +19,6 @@ describe('FeedbackController (e2e)', () => {
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [DatabaseModule, ProductModule],
-      //   providers: [ProductService],
     }).compile();
 
     app = moduleFixture.createNestApplication();
