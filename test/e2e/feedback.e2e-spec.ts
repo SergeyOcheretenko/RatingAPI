@@ -1,41 +1,52 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from '../../src/app.module';
-import { Collection, disconnect, Types } from 'mongoose';
-import { DatabaseService } from '../../src/database/database.service';
+import { Collection, connect, disconnect, Types } from 'mongoose';
 import { FeedbackService } from '../../src/feedback/feedback.service';
 import { CreateFeedbackDto } from '../../src/feedback/dto/create-feedback.dto';
 import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../src/feedback/dto/exceptions.constants';
-
-jest.setTimeout(60_000);
+import { FeedbackModule } from '../../src/feedback/feedback.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { AuthModule } from '../../src/auth/auth.module';
 
 describe('FeedbackController (e2e)', () => {
   let app: INestApplication;
   let httpServer: any;
+  let mongoConnection: any;
+  let mongoServer: any;
 
   let feedbacksCollection: Collection;
   let usersCollection: Collection;
 
   let accessToken: string;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [
+        MongooseModule.forRootAsync({
+          useFactory: () => ({
+            uri,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+          }),
+        }),
+        AuthModule,
+        FeedbackModule,
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
     await app.init();
 
-    feedbacksCollection = moduleFixture
-      .get<DatabaseService>(DatabaseService)
-      .getDatabaseHandle()
-      .collection('feedbacks');
-    usersCollection = moduleFixture
-      .get<DatabaseService>(DatabaseService)
-      .getDatabaseHandle()
-      .collection('users');
+    mongoConnection = (await connect(uri)).connection;
+    feedbacksCollection = mongoConnection.db.collection('feedbacks');
+    usersCollection = mongoConnection.db.collection('users');
+
     httpServer = app.getHttpServer();
 
     await feedbacksCollection.deleteMany({});
@@ -53,13 +64,16 @@ describe('FeedbackController (e2e)', () => {
   });
 
   afterEach(async () => {
+    jest.restoreAllMocks();
     await feedbacksCollection.deleteMany({});
     await usersCollection.deleteMany({});
   });
 
   afterAll(async () => {
     await app.close();
-    await disconnect();
+    await mongoConnection.dropDatabase();
+    await mongoConnection.close();
+    await mongoServer.stop();
   });
 
   const CREATE_FEEDBACK_1: CreateFeedbackDto = {
