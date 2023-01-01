@@ -1,31 +1,49 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Collection, disconnect, Model, Types } from 'mongoose';
-import { DatabaseModule } from '../../../src/database/database.module';
-import { DatabaseService } from '../../../src/database/database.service';
+import { connect, Types } from 'mongoose';
 import { CreateFeedbackDto } from '../../../src/feedback/dto/create-feedback.dto';
-import { FeedbackModule } from '../../../src/feedback/feedback.module';
 import { FeedbackService } from '../../../src/feedback/feedback.service';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongooseModule } from '@nestjs/mongoose';
+import {
+  Feedback,
+  FeedbackSchema,
+} from '../../../src/feedback/schema/feedback.schema';
 
 jest.mock('../../mocks/feedback/schema/feedback.schema.mock');
 
 describe('FeedbackService (unit)', () => {
   let app: INestApplication;
   let feedbackService: FeedbackService;
-  let feedbacksCollection: Collection;
+  let feedbacksCollection: any;
+  let mongoConnection: any;
+  let mongoServer: any;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule, FeedbackModule],
+      imports: [
+        MongooseModule.forRootAsync({
+          useFactory: () => ({
+            uri,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+          }),
+        }),
+        MongooseModule.forFeature([
+          { name: Feedback.name, schema: FeedbackSchema },
+        ]),
+      ],
+      providers: [FeedbackService],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    feedbacksCollection = moduleFixture
-      .get<DatabaseService>(DatabaseService)
-      .getDatabaseHandle()
-      .collection('feedbacks');
+    mongoConnection = (await connect(uri)).connection;
+    feedbacksCollection = mongoConnection.db.collection('feedbacks');
 
     feedbackService = moduleFixture.get<FeedbackService>(FeedbackService);
 
@@ -39,7 +57,9 @@ describe('FeedbackService (unit)', () => {
 
   afterAll(async () => {
     await app.close();
-    await disconnect();
+    await mongoConnection.dropDatabase();
+    await mongoConnection.close();
+    await mongoServer.stop();
   });
 
   const CREATE_FEEDBACK_1: CreateFeedbackDto & { _id } = {

@@ -1,37 +1,46 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { Collection, disconnect, Types } from 'mongoose';
-import { DatabaseModule } from '../../../src/database/database.module';
+import { Collection, connect, Types } from 'mongoose';
 import { ProductService } from '../../../src/product/product.service';
-import { DatabaseService } from '../../../src/database/database.service';
 import { ProductModule } from '../../../src/product/product.module';
 import { FindByCategoryDto } from '../../../src/product/dto/find-products.dto';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongooseModule } from '@nestjs/mongoose';
 
 jest.setTimeout(60_000);
 
 describe('ProductService (unit)', () => {
   let app: INestApplication;
   let productService: ProductService;
+  let mongoConnection: any;
+  let mongoServer: any;
 
   let productsCollection: Collection;
   let feedbacksCollection: Collection;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    const uri = mongoServer.getUri();
+
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [DatabaseModule, ProductModule],
+      imports: [
+        MongooseModule.forRootAsync({
+          useFactory: () => ({
+            uri,
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+          }),
+        }),
+        ProductModule,
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
 
-    feedbacksCollection = moduleFixture
-      .get<DatabaseService>(DatabaseService)
-      .getDatabaseHandle()
-      .collection('feedbacks');
-    productsCollection = moduleFixture
-      .get<DatabaseService>(DatabaseService)
-      .getDatabaseHandle()
-      .collection('products');
+    mongoConnection = (await connect(uri)).connection;
+    feedbacksCollection = mongoConnection.db.collection('feedbacks');
+    productsCollection = mongoConnection.db.collection('products');
 
     productService = moduleFixture.get<ProductService>(ProductService);
 
@@ -47,7 +56,9 @@ describe('ProductService (unit)', () => {
 
   afterAll(async () => {
     await app.close();
-    await disconnect();
+    await mongoConnection.dropDatabase();
+    await mongoConnection.close();
+    await mongoServer.stop();
   });
 
   const PRODUCT_1 = {
