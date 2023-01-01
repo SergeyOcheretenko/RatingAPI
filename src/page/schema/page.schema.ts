@@ -22,7 +22,7 @@ export class UpworkData {
   seniorSalary: number;
 }
 
-export class RatingPageAdvantage {
+export class PageAdvantage {
   @Prop({ required: true })
   title: string;
 
@@ -30,9 +30,9 @@ export class RatingPageAdvantage {
   description: string;
 }
 
-export type RatingPageDocument = RatingPage & Document;
+export type PageDocument = Page & Document;
 
-export class RatingPage {
+export class Page {
   @Prop({ required: true, enum: TopLevelCategory })
   firstCategory: TopLevelCategory;
 
@@ -51,8 +51,8 @@ export class RatingPage {
   @Prop({ required: true, type: UpworkData })
   upwork?: UpworkData;
 
-  @Prop({ required: true, type: RatingPageAdvantage })
-  advantages: RatingPageAdvantage[];
+  @Prop({ required: true, type: PageAdvantage })
+  advantages: PageAdvantage[];
 
   @Prop({ required: true })
   seoText: string;
@@ -64,4 +64,4 @@ export class RatingPage {
   tags: string[];
 }
 
-export const RatingPageSchema = SchemaFactory.createForClass(RatingPage);
+export const PageSchema = SchemaFactory.createForClass(Page);
