@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PageController } from './page.controller';
+import { PageService } from './page.service';
 import { Page, PageSchema } from './schema/page.schema';
 
 @Module({
@@ -8,5 +9,6 @@ import { Page, PageSchema } from './schema/page.schema';
     MongooseModule.forFeature([{ name: Page.name, schema: PageSchema }]),
   ],
   controllers: [PageController],
+  providers: [PageService],
 })
-export class RatingPageModule {}
+export class PageModule {}

@@ -6,8 +6,8 @@ import {
   HttpCode,
   Inject,
   Param,
-  Patch,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
@@ -57,7 +57,7 @@ export class ProductController {
     return product;
   }
 
-  @Patch(':id')
+  @Put(':id')
   async update(@Param('id') id: string, @Body() body: CreateProductDto) {
     const product = await this.productService.update(id, body);
 

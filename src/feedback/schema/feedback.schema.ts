@@ -3,7 +3,7 @@ import { Document, Types } from 'mongoose';
 
 export type FeedbackDocument = Feedback & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Feedback {
   @Prop({ required: true })
   name: string;

@@ -1,4 +1,4 @@
-import { Prop, SchemaFactory } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 export enum TopLevelCategory {
@@ -32,6 +32,7 @@ export class PageAdvantage {
 
 export type PageDocument = Page & Document;
 
+@Schema({ timestamps: true })
 export class Page {
   @Prop({ required: true, enum: TopLevelCategory })
   firstCategory: TopLevelCategory;
@@ -48,7 +49,7 @@ export class Page {
   @Prop({ required: true })
   category: string;
 
-  @Prop({ required: true, type: UpworkData })
+  @Prop({ required: false, type: UpworkData })
   upwork?: UpworkData;
 
   @Prop({ required: true, type: PageAdvantage })
@@ -60,7 +61,7 @@ export class Page {
   @Prop({ required: true })
   tagsTitle: string;
 
-  @Prop({ required: true, type: String })
+  @Prop({ required: true, type: [String] })
   tags: string[];
 }
 

@@ -3,30 +3,80 @@ import {
   Controller,
   Delete,
   Get,
-  HttpCode,
+  HttpException,
+  HttpStatus,
   Param,
-  Patch,
   Post,
 } from '@nestjs/common';
+import { Inject, UseGuards } from '@nestjs/common/decorators';
+import { AuthGuard } from '@nestjs/passport';
 import { CreatePageDto } from './dto/create-page.dto';
-import { FindRatingPageDto } from './dto/find-page.dto';
+import { PageService } from './page.service';
 import { Page } from './schema/page.schema';
+import {
+  PAGE_NOT_FOUND_BY_ALIAS_ERROR,
+  PAGE_NOT_FOUND_BY_ID_ERROR,
+  PAGE_WITH_ALIAS_ALREADY_EXISTS_ERROR,
+} from './page.constants';
 
 @Controller('page')
 export class PageController {
+  constructor(@Inject(PageService) private readonly pageService: PageService) {}
+
+  @UseGuards(AuthGuard('jwt'))
   @Post('create')
-  async create(@Body() body: CreatePageDto) {}
+  async create(@Body() body: CreatePageDto): Promise<Page> {
+    const pageByAlias = await this.pageService.getByAlias(body.alias);
+
+    if (pageByAlias) {
+      throw new HttpException(
+        PAGE_WITH_ALIAS_ALREADY_EXISTS_ERROR,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return this.pageService.create(body);
+  }
+
+  @Get()
+  async getAll(): Promise<Page[]> {
+    return this.pageService.getAll();
+  }
 
   @Get(':id')
-  async get(@Param('id') id: string) {}
+  async getById(@Param('id') id: string) {
+    const page = await this.pageService.getById(id);
 
+    if (!page) {
+      throw new HttpException(PAGE_NOT_FOUND_BY_ID_ERROR, HttpStatus.NOT_FOUND);
+    }
+
+    return page;
+  }
+
+  @Get('byAlias/:alias')
+  async getByAlias(@Param('alias') alias: string) {
+    const page = await this.pageService.getByAlias(alias);
+
+    if (!page) {
+      throw new HttpException(
+        PAGE_NOT_FOUND_BY_ALIAS_ERROR,
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    return page;
+  }
+
+  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  async delete(@Param('id') id: string) {}
+  async delete(@Param('id') id: string) {
+    const page = await this.pageService.delete(id);
 
-  @Patch(':id')
-  async patch(@Param('id') id: string, @Body() dto: Page) {}
+    if (!page) {
+      throw new HttpException(PAGE_NOT_FOUND_BY_ID_ERROR, HttpStatus.NOT_FOUND);
+    }
 
-  @HttpCode(200)
-  @Post()
-  async find(@Body() dto: FindRatingPageDto) {}
+    return page;
+  }
 }

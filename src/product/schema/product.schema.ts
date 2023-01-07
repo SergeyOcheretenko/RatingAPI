@@ -11,7 +11,7 @@ class ProductCharacteristic {
 
 export type ProductDocument = Product & Document;
 
-@Schema()
+@Schema({ timestamps: true })
 export class Product {
   @Prop({ required: true })
   image: string;
