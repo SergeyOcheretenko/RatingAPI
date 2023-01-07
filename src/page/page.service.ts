@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common/decorators';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreatePageDto } from './dto/create-page.dto';
-import { Page, PageDocument } from './schema/page.schema';
+import { Page, PageDocument, TopLevelCategory } from './schema/page.schema';
 
 @Injectable()
 export class PageService {
@@ -29,5 +29,17 @@ export class PageService {
 
   async delete(id: string) {
     return this.pageModel.findByIdAndDelete(id);
+  }
+
+  async getByCategory(firstCategory: TopLevelCategory) {
+    return this.pageModel.aggregate([
+      { $match: { firstCategory } },
+      {
+        $group: {
+          _id: { secondCategory: '$secondCategory' },
+          pages: { $push: { alias: '$alias', title: '$title' } },
+        },
+      },
+    ]);
   }
 }

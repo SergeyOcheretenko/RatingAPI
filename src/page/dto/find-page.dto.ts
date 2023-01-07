@@ -1,5 +1,5 @@
 import { TopLevelCategory } from '../schema/page.schema';
 
-export class FindRatingPageDto {
+export class FindPageDto {
   firstCategory: TopLevelCategory;
 }

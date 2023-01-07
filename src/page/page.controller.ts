@@ -8,7 +8,7 @@ import {
   Param,
   Post,
 } from '@nestjs/common';
-import { Inject, UseGuards } from '@nestjs/common/decorators';
+import { HttpCode, Inject, UseGuards } from '@nestjs/common/decorators';
 import { AuthGuard } from '@nestjs/passport';
 import { CreatePageDto } from './dto/create-page.dto';
 import { PageService } from './page.service';
@@ -19,6 +19,7 @@ import {
   PAGE_WITH_ALIAS_ALREADY_EXISTS_ERROR,
 } from './page.constants';
 import { MongoIdValidationPipe } from '../pipes/mongo-id.pipe';
+import { FindPageDto } from './dto/find-page.dto';
 
 @Controller('page')
 export class PageController {
@@ -79,5 +80,11 @@ export class PageController {
     }
 
     return page;
+  }
+
+  @HttpCode(200)
+  @Post('byCategory')
+  async getByCategory(@Body() body: FindPageDto) {
+    return this.pageService.getByCategory(body.firstCategory);
   }
 }
