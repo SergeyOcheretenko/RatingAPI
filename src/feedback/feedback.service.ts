@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { DeleteResult } from 'mongodb';
 import { Model, Types } from 'mongoose';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { Feedback, FeedbackDocument } from './schema/feedback.schema';
@@ -33,7 +34,7 @@ export class FeedbackService {
     });
   }
 
-  async deleteByProductId(productId: string) {
+  async deleteByProductId(productId: string): Promise<DeleteResult> {
     return this.feedbackModel.deleteMany({
       productId: new Types.ObjectId(productId),
     });
