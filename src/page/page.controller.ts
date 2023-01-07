@@ -18,6 +18,7 @@ import {
   PAGE_NOT_FOUND_BY_ID_ERROR,
   PAGE_WITH_ALIAS_ALREADY_EXISTS_ERROR,
 } from './page.constants';
+import { MongoIdValidationPipe } from '../pipes/mongo-id.pipe';
 
 @Controller('page')
 export class PageController {
@@ -44,7 +45,7 @@ export class PageController {
   }
 
   @Get(':id')
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id', MongoIdValidationPipe) id: string) {
     const page = await this.pageService.getById(id);
 
     if (!page) {
@@ -70,7 +71,7 @@ export class PageController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', MongoIdValidationPipe) id: string) {
     const page = await this.pageService.delete(id);
 
     if (!page) {

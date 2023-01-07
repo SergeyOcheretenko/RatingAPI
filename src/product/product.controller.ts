@@ -13,6 +13,7 @@ import {
 import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException } from '@nestjs/common/exceptions';
 import { AuthGuard } from '@nestjs/passport';
+import { MongoIdValidationPipe } from '../pipes/mongo-id.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
 import { FindByCategoryDto } from './dto/find-products.dto';
 import { PRODUCT_NOT_FOUND_ERROR } from './product.constants';
@@ -35,7 +36,7 @@ export class ProductController {
   }
 
   @Get(':id')
-  async getById(@Param('id') id: string) {
+  async getById(@Param('id', MongoIdValidationPipe) id: string) {
     const product = await this.productService.getById(id);
 
     if (!product) {
@@ -47,7 +48,7 @@ export class ProductController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', MongoIdValidationPipe) id: string) {
     const product = await this.productService.delete(id);
 
     if (!product) {
@@ -58,7 +59,10 @@ export class ProductController {
   }
 
   @Put(':id')
-  async update(@Param('id') id: string, @Body() body: CreateProductDto) {
+  async update(
+    @Param('id', MongoIdValidationPipe) id: string,
+    @Body() body: CreateProductDto,
+  ) {
     const product = await this.productService.update(id, body);
 
     if (!product) {

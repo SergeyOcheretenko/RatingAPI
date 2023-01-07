@@ -11,6 +11,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { MongoIdValidationPipe } from '../pipes/mongo-id.pipe';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { FEEDBACK_NOT_FOUND_MESSAGE } from './dto/exceptions.constants';
 import { FeedbackService } from './feedback.service';
@@ -32,13 +33,15 @@ export class FeedbackController {
   }
 
   @Get('byProduct/:productId')
-  async getByProduct(@Param('productId') productId: string) {
+  async getByProduct(
+    @Param('productId', MongoIdValidationPipe) productId: string,
+  ) {
     return this.feedbackService.findByProductId(productId);
   }
 
   @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
-  async delete(@Param('id') id: string) {
+  async delete(@Param('id', MongoIdValidationPipe) id: string) {
     const deletedFeedback = await this.feedbackService.delete(id);
 
     if (!deletedFeedback) {
@@ -50,7 +53,9 @@ export class FeedbackController {
 
   @UseGuards(AuthGuard('jwt'))
   @Delete('byProduct/:productId')
-  async deleteByProduct(@Param('productId') productId: string) {
+  async deleteByProduct(
+    @Param('productId', MongoIdValidationPipe) productId: string,
+  ) {
     return this.feedbackService.deleteByProductId(productId);
   }
 }
