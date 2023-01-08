@@ -29,6 +29,14 @@ export class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   JWT_SECRET: string;
+
+  @IsString()
+  @IsNotEmpty()
+  TELEGRAM_TOKEN: string;
+
+  @IsString()
+  @IsNotEmpty()
+  TELEGRAM_CHAT_ID: string;
 }
 
 @Injectable()
@@ -62,6 +70,13 @@ export class ConfigService implements OnModuleInit {
   public getJwtConfig() {
     return {
       secret: this.env.JWT_SECRET,
+    };
+  }
+
+  public getTelegramConfig() {
+    return {
+      token: this.env.TELEGRAM_TOKEN,
+      chatId: this.env.TELEGRAM_CHAT_ID,
     };
   }
 

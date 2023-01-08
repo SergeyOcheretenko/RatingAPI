@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { DeleteResult } from 'mongodb';
 import { Model, Types } from 'mongoose';
+import { TelegramService } from '../telegram/telegram.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { Feedback, FeedbackDocument } from './schema/feedback.schema';
 
@@ -10,7 +11,25 @@ export class FeedbackService {
   constructor(
     @InjectModel(Feedback.name)
     private readonly feedbackModel: Model<FeedbackDocument>,
+    @Inject(TelegramService) private readonly telegramService: TelegramService,
   ) {}
+
+  async notify({
+    name,
+    title,
+    description,
+    rating,
+    productId,
+  }: CreateFeedbackDto) {
+    const message =
+      `<b>Name:</b> ${name}\n` +
+      `<b>Title:</b> ${title}\n` +
+      `<b>Description:</b> ${description}\n` +
+      `<b>Rating:</b> ${rating}\n` +
+      `<b>Product ID:</b> ${productId}`;
+
+    await this.telegramService.sendHtml(message);
+  }
 
   async create(feedbackData: CreateFeedbackDto): Promise<Feedback> {
     const feedback = new this.feedbackModel({

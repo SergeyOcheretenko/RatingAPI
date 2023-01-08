@@ -24,7 +24,9 @@ export class FeedbackController {
 
   @Post('create')
   async create(@Body() feedbackData: CreateFeedbackDto) {
-    return this.feedbackService.create(feedbackData);
+    const feedback = await this.feedbackService.create(feedbackData);
+    await this.feedbackService.notify(feedbackData);
+    return feedback;
   }
 
   @Get()
