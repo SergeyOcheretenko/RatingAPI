@@ -9,6 +9,8 @@ import {
   Feedback,
   FeedbackSchema,
 } from '../../../src/feedback/schema/feedback.schema';
+import { TelegramService } from '../../../src/telegram/telegram.service';
+import { MockTelegramService } from '../../mocks/telegram/telegram.service.mock';
 
 jest.mock('../../mocks/feedback/schema/feedback.schema.mock');
 
@@ -18,6 +20,7 @@ describe('FeedbackService (unit)', () => {
   let feedbacksCollection: any;
   let mongoConnection: any;
   let mongoServer: any;
+  let telegramService: TelegramService;
 
   beforeAll(async () => {
     mongoServer = await MongoMemoryServer.create();
@@ -36,7 +39,13 @@ describe('FeedbackService (unit)', () => {
           { name: Feedback.name, schema: FeedbackSchema },
         ]),
       ],
-      providers: [FeedbackService],
+      providers: [
+        FeedbackService,
+        {
+          provide: TelegramService,
+          useClass: MockTelegramService,
+        },
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -45,6 +54,7 @@ describe('FeedbackService (unit)', () => {
     mongoConnection = (await connect(uri)).connection;
     feedbacksCollection = mongoConnection.db.collection('feedbacks');
 
+    telegramService = moduleFixture.get<TelegramService>(TelegramService);
     feedbackService = moduleFixture.get<FeedbackService>(FeedbackService);
 
     await feedbacksCollection.deleteMany({});
@@ -192,6 +202,28 @@ describe('FeedbackService (unit)', () => {
       expect(existingFeedbacks).toBeInstanceOf(Array);
       expect(existingFeedbacks).toHaveLength(1);
       expect(existingFeedbacks[0]).toMatchObject(FEEDBACK_2);
+    });
+  });
+
+  describe('.notify() method tests', () => {
+    const { name, title, description, rating, productId } = CREATE_FEEDBACK_1;
+
+    const EXPECTED_MESSAGE =
+      `<b>Name:</b> ${name}\n` +
+      `<b>Title:</b> ${title}\n` +
+      `<b>Description:</b> ${description}\n` +
+      `<b>Rating:</b> ${rating}\n` +
+      `<b>Product ID:</b> ${productId}`;
+
+    beforeEach(() => {
+      telegramService.sendHtml = jest.fn();
+    });
+
+    it('Should create message from body and send HTML message', async () => {
+      const result = await feedbackService.notify(CREATE_FEEDBACK_1);
+
+      expect(telegramService.sendHtml).toHaveBeenCalledWith(EXPECTED_MESSAGE);
+      expect(result).toBeUndefined();
     });
   });
 });

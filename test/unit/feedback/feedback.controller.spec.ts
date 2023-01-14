@@ -33,12 +33,14 @@ describe('FeedbackController (unit)', () => {
       feedbackService.create = jest
         .fn()
         .mockResolvedValue(RESPONSE_FROM_FEEDBACK_SERVICE);
+      feedbackService.notify = jest.fn();
     });
 
     it('Should call .create() method from FeedbackService', async () => {
       const result = await feedbackController.create(BODY);
 
       expect(feedbackService.create).toHaveBeenCalledWith(BODY);
+      expect(feedbackService.notify).toHaveBeenCalledWith(BODY);
       expect(result).toEqual(RESPONSE_FROM_FEEDBACK_SERVICE);
     });
   });

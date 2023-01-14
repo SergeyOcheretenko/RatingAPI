@@ -4,4 +4,5 @@ export class MockFeedbackService {
   findByProductId = jest.fn;
   delete = jest.fn;
   deleteByProductId = jest.fn;
+  notify = jest.fn;
 }
