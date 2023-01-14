@@ -37,6 +37,10 @@ export class EnvironmentVariables {
   @IsString()
   @IsNotEmpty()
   TELEGRAM_CHAT_ID: string;
+
+  @IsString()
+  @IsNotEmpty()
+  JOOBLE_KEY: string;
 }
 
 @Injectable()
@@ -77,6 +81,12 @@ export class ConfigService implements OnModuleInit {
     return {
       token: this.env.TELEGRAM_TOKEN,
       chatId: this.env.TELEGRAM_CHAT_ID,
+    };
+  }
+
+  public getJoobleConfig() {
+    return {
+      apiKey: this.env.JOOBLE_KEY,
     };
   }
 
