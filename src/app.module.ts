@@ -7,6 +7,7 @@ import { ProductModule } from './product/product.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from './config/config.module';
+import { SubscriptionModule } from './subscription/subscription.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ConfigModule } from './config/config.module';
     PageModule,
     ProductModule,
     FeedbackModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
