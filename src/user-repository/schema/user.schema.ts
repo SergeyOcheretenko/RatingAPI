@@ -10,6 +10,9 @@ export class User {
 
   @Prop({ required: true })
   passwordHash: string;
+
+  @Prop({ required: false, default: null })
+  telegramId?: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

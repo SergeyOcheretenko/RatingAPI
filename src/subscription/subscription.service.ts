@@ -37,8 +37,33 @@ export class SubscriptionService {
     return subscription;
   }
 
-  async getAll(): Promise<Subscription[]> {
-    return this.subscriptionModel.find();
+  async getAll() {
+    return this.subscriptionModel.aggregate([
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'subscribers',
+          foreignField: '_id',
+          as: 'subscribers',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          productId: 1,
+          subscribers: {
+            $map: {
+              input: '$subscribers',
+              as: 'subscriber',
+              in: {
+                _id: '$$subscriber._id',
+                telegramId: '$$subscriber.telegramId',
+              },
+            },
+          },
+        },
+      },
+    ]);
   }
 
   async getByProductId(productId: string): Promise<Subscription | null> {

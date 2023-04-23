@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { DeleteResult } from 'mongodb';
 import { Model, Types } from 'mongoose';
+import { SubscriptionService } from '../subscription/subscription.service';
 import { TelegramService } from '../telegram/telegram.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { Feedback, FeedbackDocument } from './schema/feedback.schema';
@@ -12,6 +13,8 @@ export class FeedbackService {
     @InjectModel(Feedback.name)
     private readonly feedbackModel: Model<FeedbackDocument>,
     @Inject(TelegramService) private readonly telegramService: TelegramService,
+    @Inject(SubscriptionService)
+    private readonly subscriptionService: SubscriptionService,
   ) {}
 
   async notify({
@@ -28,7 +31,21 @@ export class FeedbackService {
       `<b>Rating:</b> ${rating}\n` +
       `<b>Product ID:</b> ${productId}`;
 
-    await this.telegramService.sendHtml(message);
+    // const { subscribers } = await this.subscriptionService.getByProductId(
+    //   productId,
+    // );
+
+    const subscriptions = await this.subscriptionService.getAll();
+    const subscribers = subscriptions
+      .filter((s) => s.productId.toString() === productId)
+      .map((e) => e.subscribers)
+      .flat();
+
+    for (const subscriber of subscribers) {
+      if (!subscriber.telegramId) continue;
+
+      await this.telegramService.sendHtml(subscriber.telegramId, message);
+    }
   }
 
   async create(feedbackData: CreateFeedbackDto): Promise<Feedback> {

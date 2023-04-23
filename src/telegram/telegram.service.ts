@@ -16,18 +16,18 @@ export class TelegramService {
     this.bot = new Telegraf(config.token);
   }
 
-  async send(message: string) {
-    await this.bot.telegram.sendMessage(this.config.chatId, message);
+  async send(telegramId: number | string, message: string) {
+    await this.bot.telegram.sendMessage(telegramId, message);
   }
 
-  async sendMarkdown(message: string) {
-    await this.bot.telegram.sendMessage(this.config.chatId, message, {
+  async sendMarkdown(telegramId: number | string, message: string) {
+    await this.bot.telegram.sendMessage(telegramId, message, {
       parse_mode: 'MarkdownV2',
     });
   }
 
-  async sendHtml(message: string) {
-    await this.bot.telegram.sendMessage(this.config.chatId, message, {
+  async sendHtml(telegramId: number | string, message: string) {
+    await this.bot.telegram.sendMessage(telegramId, message, {
       parse_mode: 'HTML',
     });
   }

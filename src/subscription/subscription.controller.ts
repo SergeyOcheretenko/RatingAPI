@@ -13,7 +13,7 @@ export class SubscriptionController {
   }
 
   @Get()
-  async getAll(): Promise<Subscription[]> {
+  async getAll() {
     return this.subscriptionService.getAll();
   }
 }
