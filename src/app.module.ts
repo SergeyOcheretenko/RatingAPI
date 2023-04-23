@@ -7,7 +7,6 @@ import { ProductModule } from './product/product.module';
 import { FeedbackModule } from './feedback/feedback.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from './config/config.module';
-import { TelegramModule } from './telegram/telegram.module';
 
 @Module({
   imports: [
