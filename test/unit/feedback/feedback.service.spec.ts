@@ -204,26 +204,4 @@ describe('FeedbackService (unit)', () => {
       expect(existingFeedbacks[0]).toMatchObject(FEEDBACK_2);
     });
   });
-
-  describe('.notify() method tests', () => {
-    const { name, title, description, rating, productId } = CREATE_FEEDBACK_1;
-
-    const EXPECTED_MESSAGE =
-      `<b>Name:</b> ${name}\n` +
-      `<b>Title:</b> ${title}\n` +
-      `<b>Description:</b> ${description}\n` +
-      `<b>Rating:</b> ${rating}\n` +
-      `<b>Product ID:</b> ${productId}`;
-
-    beforeEach(() => {
-      telegramService.sendHtml = jest.fn();
-    });
-
-    it('Should create message from body and send HTML message', async () => {
-      const result = await feedbackService.notify(CREATE_FEEDBACK_1);
-
-      expect(telegramService.sendHtml).toHaveBeenCalledWith(EXPECTED_MESSAGE);
-      expect(result).toBeUndefined();
-    });
-  });
 });

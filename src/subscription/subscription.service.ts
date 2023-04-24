@@ -15,7 +15,9 @@ export class SubscriptionService {
   ) {}
 
   async addSubscriber({ productId, userId }: AddSubscriberDto) {
-    const subscription = await this.getByProductId(productId);
+    const subscription = await this.subscriptionModel.findOne({
+      productId: new Types.ObjectId(productId),
+    });
 
     if (!subscription) {
       const newSubscription = new this.subscriptionModel({
@@ -26,15 +28,11 @@ export class SubscriptionService {
       return newSubscription.save();
     }
 
+    if (subscription.subscribers.includes(new Types.ObjectId(userId)))
+      return null;
+
     subscription.subscribers.push(new Types.ObjectId(userId));
-
-    await this.subscriptionModel.findOneAndUpdate(
-      { productId: new Types.ObjectId(productId) },
-      subscription,
-      { new: true },
-    );
-
-    return subscription;
+    return subscription.save();
   }
 
   async getAll() {
@@ -66,9 +64,39 @@ export class SubscriptionService {
     ]);
   }
 
-  async getByProductId(productId: string): Promise<Subscription | null> {
-    return this.subscriptionModel.findOne({
-      productId: new Types.ObjectId(productId),
-    });
+  async getByProductId(productId: string) {
+    const [result] = await this.subscriptionModel.aggregate([
+      {
+        $match: {
+          productId: new Types.ObjectId(productId),
+        },
+      },
+      {
+        $lookup: {
+          from: 'users',
+          localField: 'subscribers',
+          foreignField: '_id',
+          as: 'subscribers',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          productId: '$productId',
+          subscribers: {
+            $map: {
+              input: '$subscribers',
+              as: 'subscriber',
+              in: {
+                _id: '$$subscriber._id',
+                telegramId: '$$subscriber.telegramId',
+              },
+            },
+          },
+        },
+      },
+    ]);
+
+    return result;
   }
 }

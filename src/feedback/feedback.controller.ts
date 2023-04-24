@@ -15,17 +15,19 @@ import { MongoIdValidationPipe } from '../pipes/mongo-id.pipe';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { FEEDBACK_NOT_FOUND_MESSAGE } from './dto/exceptions.constants';
 import { FeedbackService } from './feedback.service';
+import { NotifyService } from '../notify/notify.service';
 
 @Controller('feedback')
 export class FeedbackController {
   constructor(
     @Inject(FeedbackService) private readonly feedbackService: FeedbackService,
+    @Inject(NotifyService) private readonly notifyService: NotifyService,
   ) {}
 
   @Post('create')
   async create(@Body() feedbackData: CreateFeedbackDto) {
     const feedback = await this.feedbackService.create(feedbackData);
-    await this.feedbackService.notify(feedbackData);
+    await this.notifyService.newFeedbackNotify(feedback);
     return feedback;
   }
 
