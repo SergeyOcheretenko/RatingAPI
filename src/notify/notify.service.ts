@@ -25,14 +25,16 @@ export class NotifyService {
       `<b>Rating:</b> ${rating}\n` +
       `<b>Product ID:</b> ${productId.toString()}`;
 
-    const { subscribers } = await this.subscriptionService.getByProductId(
+    const subscriptions = await this.subscriptionService.getByProductId(
       productId.toString(),
     );
 
-    for (const subscriber of subscribers) {
-      if (!subscriber.telegramId) continue;
+    if (!subscriptions.length) return;
 
-      await this.telegramService.sendHtml(subscriber.telegramId, message);
+    for (const { user } of subscriptions) {
+      if (!user.telegramId) continue;
+
+      await this.telegramService.sendHtml(user.telegramId, message);
     }
   }
 }

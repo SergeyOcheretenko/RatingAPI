@@ -9,7 +9,7 @@ export class Subscription {
   productId: Types.ObjectId;
 
   @Prop({ required: true })
-  subscribers: Types.ObjectId[];
+  userId: Types.ObjectId;
 }
 
 export const SubscriptionSchema = SchemaFactory.createForClass(Subscription);

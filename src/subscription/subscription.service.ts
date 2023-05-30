@@ -9,94 +9,84 @@ import {
 
 @Injectable()
 export class SubscriptionService {
+  private lookups = [
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'userId',
+        foreignField: '_id',
+        as: 'user',
+      },
+    },
+    {
+      $lookup: {
+        from: 'products',
+        localField: 'productId',
+        foreignField: '_id',
+        as: 'product',
+      },
+    },
+    {
+      $unwind: '$user',
+    },
+    {
+      $unwind: '$product',
+    },
+  ];
+
   constructor(
     @InjectModel(Subscription.name)
     private readonly subscriptionModel: Model<SubscriptionDocument>,
   ) {}
 
   async addSubscriber({ productId, userId }: AddSubscriberDto) {
-    const subscription = await this.subscriptionModel.findOne({
+    const subscription = new this.subscriptionModel({
       productId: new Types.ObjectId(productId),
+      userId: new Types.ObjectId(userId),
     });
-
-    if (!subscription) {
-      const newSubscription = new this.subscriptionModel({
-        productId: new Types.ObjectId(productId),
-        subscribers: [new Types.ObjectId(userId)],
-      });
-
-      return newSubscription.save();
-    }
-
-    if (subscription.subscribers.includes(new Types.ObjectId(userId)))
-      return null;
-
-    subscription.subscribers.push(new Types.ObjectId(userId));
     return subscription.save();
   }
 
   async getAll() {
-    return this.subscriptionModel.aggregate([
+    return this.subscriptionModel.aggregate([...this.lookups]);
+  }
+
+  async getById(id: string) {
+    const [subscription] = await this.subscriptionModel.aggregate([
       {
-        $lookup: {
-          from: 'users',
-          localField: 'subscribers',
-          foreignField: '_id',
-          as: 'subscribers',
+        $match: {
+          _id: new Types.ObjectId(id),
         },
       },
-      {
-        $project: {
-          _id: 0,
-          productId: 1,
-          subscribers: {
-            $map: {
-              input: '$subscribers',
-              as: 'subscriber',
-              in: {
-                _id: '$$subscriber._id',
-                telegramId: '$$subscriber.telegramId',
-              },
-            },
-          },
-        },
-      },
+      ...this.lookups,
     ]);
+
+    return subscription;
   }
 
   async getByProductId(productId: string) {
-    const [result] = await this.subscriptionModel.aggregate([
+    return this.subscriptionModel.aggregate([
       {
         $match: {
           productId: new Types.ObjectId(productId),
         },
       },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'subscribers',
-          foreignField: '_id',
-          as: 'subscribers',
-        },
-      },
-      {
-        $project: {
-          _id: 0,
-          productId: '$productId',
-          subscribers: {
-            $map: {
-              input: '$subscribers',
-              as: 'subscriber',
-              in: {
-                _id: '$$subscriber._id',
-                telegramId: '$$subscriber.telegramId',
-              },
-            },
-          },
-        },
-      },
+      ...this.lookups,
     ]);
+  }
 
-    return result;
+  async getByUserId(userId: string) {
+    return this.subscriptionModel.aggregate([
+      {
+        $match: {
+          userId: new Types.ObjectId(userId),
+        },
+      },
+      ...this.lookups,
+    ]);
+  }
+
+  async delete(id: string) {
+    return this.subscriptionModel.findByIdAndDelete(new Types.ObjectId(id));
   }
 }

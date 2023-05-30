@@ -1,6 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  NotFoundException,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { AddSubscriberDto } from './dto/add-subscriber.dto';
-import { Subscription } from './schema/subscription.schema';
 import { SubscriptionService } from './subscription.service';
 import { MongoIdValidationPipe } from '../pipes/mongo-id.pipe';
 
@@ -18,10 +25,31 @@ export class SubscriptionController {
     return this.subscriptionService.getAll();
   }
 
-  @Get('byProduct/:productId')
+  @Get(':id')
+  async getById(@Param('id', MongoIdValidationPipe) id: string) {
+    const subscription = await this.subscriptionService.getById(id);
+
+    if (!subscription) {
+      throw new NotFoundException('Subscription not found');
+    }
+
+    return subscription;
+  }
+
+  @Get('product/:productId')
   async getByProductId(
     @Param('productId', MongoIdValidationPipe) productId: string,
   ) {
     return this.subscriptionService.getByProductId(productId);
+  }
+
+  @Get('user/:userId')
+  async getByUserId(@Param('userId', MongoIdValidationPipe) userId: string) {
+    return this.subscriptionService.getByUserId(userId);
+  }
+
+  @Delete(':id')
+  async delete(@Param('id', MongoIdValidationPipe) id: string) {
+    return this.subscriptionService.delete(id);
   }
 }
