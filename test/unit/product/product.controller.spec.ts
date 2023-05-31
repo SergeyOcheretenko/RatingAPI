@@ -1,10 +1,10 @@
 import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException } from '@nestjs/common/exceptions';
-import { CreateProductDto } from '../../../src/product/dto/create-product.dto';
-import { FindByCategoryDto } from '../../../src/product/dto/find-products.dto';
-import { PRODUCT_NOT_FOUND_ERROR } from '../../../src/product/product.constants';
-import { ProductController } from '../../../src/product/product.controller';
-import { ProductService } from '../../../src/product/product.service';
+import { CreateProductDto } from '../../../src/modules/product/dto/create-product.dto';
+import { FindByCategoryDto } from '../../../src/modules/product/dto/find-products.dto';
+import { PRODUCT_NOT_FOUND_ERROR } from '../../../src/modules/product/product.constants';
+import { ProductController } from '../../../src/modules/product/product.controller';
+import { ProductService } from '../../../src/modules/product/product.service';
 import { MockProductService } from '../../mocks/product/product.service.mock';
 
 describe('ProductController (unit)', () => {

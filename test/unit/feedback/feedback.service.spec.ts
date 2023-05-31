@@ -1,15 +1,12 @@
 import { INestApplication } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { connect, Types } from 'mongoose';
-import { CreateFeedbackDto } from '../../../src/feedback/dto/create-feedback.dto';
-import { FeedbackService } from '../../../src/feedback/feedback.service';
+import { CreateFeedbackDto } from '../../../src/modules/feedback/dto/create-feedback.dto';
+import { FeedbackService } from '../../../src/modules/feedback/feedback.service';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongooseModule } from '@nestjs/mongoose';
-import {
-  Feedback,
-  FeedbackSchema,
-} from '../../../src/feedback/schema/feedback.schema';
-import { TelegramService } from '../../../src/telegram/telegram.service';
+import { Feedback, FeedbackSchema } from '../../../src/schemas/feedback.schema';
+import { TelegramService } from '../../../src/modules/telegram/telegram.service';
 import { MockTelegramService } from '../../mocks/telegram/telegram.service.mock';
 
 jest.mock('../../mocks/feedback/schema/feedback.schema.mock');

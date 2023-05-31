@@ -3,16 +3,16 @@ import {
   ALREADY_REGISTERED_ERROR,
   USER_NOT_FOUND_ERROR,
   WRONG_PASSWORD_ERROR,
-} from '../../../src/auth/auth.constants';
+} from '../../../src/modules/auth/auth.constants';
 import {
   AlreadyRegisteredException,
   AuthService,
   UserNotFoundException,
   WrongPasswordException,
-} from '../../../src/auth/auth.service';
-import { UserData } from '../../../src/auth/dto/auth.dto';
-import { User } from '../../../src/user-repository/schema/user.schema';
-import { UserRepository } from '../../../src/user-repository/user-repository.service';
+} from '../../../src/modules/auth/auth.service';
+import { UserData } from '../../../src/modules/auth/dto/auth.dto';
+import { User } from '../../../src/schemas/user.schema';
+import { UserService } from '../../../src/modules/user/user.service';
 import { MockJwtService } from '../../mocks/modules/jwt-service/jwt.service.mock';
 import { MockUserRepository } from '../../mocks/user-repository/user-repository.service.mock';
 
@@ -21,11 +21,11 @@ import * as bcryptjs from 'bcryptjs';
 describe('AuthService (unit)', () => {
   let authService: AuthService;
   let jwtService: JwtService;
-  let userRepository: UserRepository;
+  let userRepository: UserService;
 
   beforeEach(() => {
     jwtService = new MockJwtService() as unknown as JwtService;
-    userRepository = new MockUserRepository() as unknown as UserRepository;
+    userRepository = new MockUserRepository() as unknown as UserService;
 
     authService = new AuthService(userRepository, jwtService);
   });

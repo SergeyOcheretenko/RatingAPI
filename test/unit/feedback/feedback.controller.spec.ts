@@ -1,9 +1,9 @@
-import { CreateFeedbackDto } from '../../../src/feedback/dto/create-feedback.dto';
-import { FeedbackController } from '../../../src/feedback/feedback.controller';
-import { FeedbackService } from '../../../src/feedback/feedback.service';
+import { CreateFeedbackDto } from '../../../src/modules/feedback/dto/create-feedback.dto';
+import { FeedbackController } from '../../../src/modules/feedback/feedback.controller';
+import { FeedbackService } from '../../../src/modules/feedback/feedback.service';
 import { MockFeedbackService } from '../../mocks/feedback/feedback.service.mock';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../../src/feedback/dto/exceptions.constants';
+import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../../src/modules/feedback/feedback.constants';
 
 describe('FeedbackController (unit)', () => {
   let feedbackController: FeedbackController;

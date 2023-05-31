@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Collection, connect, Types } from 'mongoose';
-import { ProductService } from '../../../src/product/product.service';
-import { ProductModule } from '../../../src/product/product.module';
-import { FindByCategoryDto } from '../../../src/product/dto/find-products.dto';
+import { ProductService } from '../../../src/modules/product/product.service';
+import { ProductModule } from '../../../src/modules/product/product.module';
+import { FindByCategoryDto } from '../../../src/modules/product/dto/find-products.dto';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongooseModule } from '@nestjs/mongoose';
 

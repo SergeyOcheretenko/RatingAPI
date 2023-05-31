@@ -2,13 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import * as request from 'supertest';
 import { Collection, connect, disconnect, Types } from 'mongoose';
-import { FeedbackService } from '../../src/feedback/feedback.service';
-import { CreateFeedbackDto } from '../../src/feedback/dto/create-feedback.dto';
-import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../src/feedback/dto/exceptions.constants';
-import { FeedbackModule } from '../../src/feedback/feedback.module';
+import { FeedbackService } from '../../src/modules/feedback/feedback.service';
+import { CreateFeedbackDto } from '../../src/modules/feedback/dto/create-feedback.dto';
+import { FEEDBACK_NOT_FOUND_MESSAGE } from '../../src/modules/feedback/feedback.constants';
+import { FeedbackModule } from '../../src/modules/feedback/feedback.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { AuthModule } from '../../src/auth/auth.module';
+import { AuthModule } from '../../src/modules/auth/auth.module';
 
 describe('FeedbackController (e2e)', () => {
   let app: INestApplication;
