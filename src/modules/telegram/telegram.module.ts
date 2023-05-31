@@ -2,6 +2,7 @@ import { Module, Provider } from '@nestjs/common';
 import { ConfigModule } from '../../config/config.module';
 import { ConfigService } from '../../config/config.service';
 import { TelegramService } from './telegram.service';
+import { UserModule } from '../user/user.module';
 
 const telegramConfigFactory: Provider = {
   provide: 'TELEGRAM_CONFIG',
@@ -11,7 +12,7 @@ const telegramConfigFactory: Provider = {
 };
 
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, UserModule],
   providers: [TelegramService, telegramConfigFactory],
   exports: [TelegramService],
 })
