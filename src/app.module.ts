@@ -6,6 +6,7 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from './config/config.module';
 import { SubscriptionModule } from './modules/subscription/subscription.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { SubscriptionModule } from './modules/subscription/subscription.module';
     ProductModule,
     FeedbackModule,
     SubscriptionModule,
+    UserModule,
   ],
 })
 export class AppModule {}

@@ -5,10 +5,12 @@ import {
   USER_NOT_FOUND_ERROR,
   WRONG_PASSWORD_ERROR,
 } from './auth.constants';
-import { UserData } from './dto/auth.dto';
+import { RegisterDto } from './dto/register.dto';
 import { compare } from 'bcryptjs';
 import { User } from '../../schemas/user.schema';
 import { JwtService } from '@nestjs/jwt/dist';
+import { LoginDto } from './dto/login.dto';
+import { Types } from 'mongoose';
 
 export class AlreadyRegisteredException extends Error {}
 export class UserNotFoundException extends Error {}
@@ -21,8 +23,8 @@ export class AuthService {
     @Inject(JwtService) private readonly jwtService: JwtService,
   ) {}
 
-  async register(userData: UserData) {
-    const user = await this.userService.findByEmail(userData.email);
+  async register(userData: RegisterDto) {
+    const user = await this.userService.getByEmail(userData.email);
     if (user) {
       throw new AlreadyRegisteredException(ALREADY_REGISTERED_ERROR);
     }
@@ -30,8 +32,10 @@ export class AuthService {
     return this.userService.create(userData);
   }
 
-  async validateUser(userData: UserData): Promise<Pick<User, 'email'>> {
-    const user = await this.userService.findByEmail(userData.email);
+  async validateUser(
+    userData: LoginDto,
+  ): Promise<Pick<User, 'email'> & { id: string }> {
+    const user = await this.userService.getByEmail(userData.email);
     if (!user) {
       throw new UserNotFoundException(USER_NOT_FOUND_ERROR);
     }
@@ -44,10 +48,10 @@ export class AuthService {
       throw new WrongPasswordException(WRONG_PASSWORD_ERROR);
     }
 
-    return { email: userData.email };
+    return { id: user._id.toString(), email: userData.email };
   }
 
-  async login(payload: Pick<User, 'email'>) {
+  async login(payload: Pick<User, 'email'> & { id: string }) {
     return {
       accessToken: await this.jwtService.signAsync(payload),
     };

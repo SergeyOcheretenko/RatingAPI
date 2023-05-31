@@ -16,14 +16,15 @@ import {
   UserNotFoundException,
   WrongPasswordException,
 } from './auth.service';
-import { UserData } from './dto/auth.dto';
+import { RegisterDto } from './dto/register.dto';
+import { LoginDto } from './dto/login.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(@Inject(AuthService) private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() body: UserData) {
+  async register(@Body() body: RegisterDto) {
     try {
       return await this.authService.register(body);
     } catch (err) {
@@ -36,9 +37,13 @@ export class AuthController {
 
   @HttpCode(200)
   @Post('login')
-  async login(@Body() body: UserData) {
+  async login(@Body() body: LoginDto) {
     try {
       const payload = await this.authService.validateUser(body);
+
+      console.log('payload');
+      console.log(payload);
+
       return await this.authService.login(payload);
     } catch (err) {
       if (err instanceof UserNotFoundException) {
