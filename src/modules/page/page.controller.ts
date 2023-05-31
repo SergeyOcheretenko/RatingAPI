@@ -19,14 +19,14 @@ import {
   PAGE_WITH_ALIAS_ALREADY_EXISTS_ERROR,
 } from './page.constants';
 import { MongoIdValidationPipe } from '../../pipes/mongo-id.pipe';
-import { FindPageDto } from './dto/find-page.dto';
+import { TopLevelCategory } from '../../schemas/page.schema';
 
-@Controller('page')
+@Controller('pages')
 export class PageController {
   constructor(@Inject(PageService) private readonly pageService: PageService) {}
 
   @UseGuards(AuthGuard('jwt'))
-  @Post('create')
+  @Post()
   async create(@Body() body: CreatePageDto): Promise<Page> {
     const pageByAlias = await this.pageService.getByAlias(body.alias);
 
@@ -56,7 +56,7 @@ export class PageController {
     return page;
   }
 
-  @Get('byAlias/:alias')
+  @Get('alias/:alias')
   async getByAlias(@Param('alias') alias: string) {
     const page = await this.pageService.getByAlias(alias);
 
@@ -83,8 +83,8 @@ export class PageController {
   }
 
   @HttpCode(200)
-  @Post('byCategory')
-  async getByCategory(@Body() body: FindPageDto) {
-    return this.pageService.getByCategory(body.firstCategory);
+  @Get('category/:category')
+  async getByCategory(@Param('category') category: TopLevelCategory) {
+    return this.pageService.getByCategory(category);
   }
 }

@@ -17,14 +17,14 @@ import { FEEDBACK_NOT_FOUND_MESSAGE } from './feedback.constants';
 import { FeedbackService } from './feedback.service';
 import { NotifyService } from '../notify/notify.service';
 
-@Controller('feedback')
+@Controller('feedbacks')
 export class FeedbackController {
   constructor(
     @Inject(FeedbackService) private readonly feedbackService: FeedbackService,
     @Inject(NotifyService) private readonly notifyService: NotifyService,
   ) {}
 
-  @Post('create')
+  @Post()
   async create(@Body() feedbackData: CreateFeedbackDto) {
     const feedback = await this.feedbackService.create(feedbackData);
     await this.notifyService.newFeedbackNotify(feedback);
@@ -36,7 +36,7 @@ export class FeedbackController {
     return this.feedbackService.getAll();
   }
 
-  @Get('byProduct/:productId')
+  @Get('product/:productId')
   async getByProduct(
     @Param('productId', MongoIdValidationPipe) productId: string,
   ) {
@@ -56,7 +56,7 @@ export class FeedbackController {
   }
 
   @UseGuards(AuthGuard('jwt'))
-  @Delete('byProduct/:productId')
+  @Delete('product/:productId')
   async deleteByProduct(
     @Param('productId', MongoIdValidationPipe) productId: string,
   ) {

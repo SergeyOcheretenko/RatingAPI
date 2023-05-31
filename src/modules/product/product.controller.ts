@@ -19,13 +19,13 @@ import { FindByCategoryDto } from './dto/find-products.dto';
 import { PRODUCT_NOT_FOUND_ERROR } from './product.constants';
 import { ProductService } from './product.service';
 
-@Controller('product')
+@Controller('products')
 export class ProductController {
   constructor(
     @Inject(ProductService) private readonly productService: ProductService,
   ) {}
 
-  @Post('create')
+  @Post()
   async create(@Body() body: CreateProductDto) {
     return this.productService.create(body);
   }
@@ -73,7 +73,7 @@ export class ProductController {
   }
 
   @HttpCode(200)
-  @Post('byCategory')
+  @Post('category')
   async findByCategory(@Body() body: FindByCategoryDto) {
     return this.productService.findByCategory(body);
   }
