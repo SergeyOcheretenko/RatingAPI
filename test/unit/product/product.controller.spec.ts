@@ -1,10 +1,9 @@
 import { HttpStatus } from '@nestjs/common/enums';
 import { HttpException } from '@nestjs/common/exceptions';
-import { CreateProductDto } from '../../../src/product/dto/create-product.dto';
-import { FindByCategoryDto } from '../../../src/product/dto/find-products.dto';
-import { PRODUCT_NOT_FOUND_ERROR } from '../../../src/product/product.constants';
-import { ProductController } from '../../../src/product/product.controller';
-import { ProductService } from '../../../src/product/product.service';
+import { CreateProductDto } from '../../../src/modules/product/dto/create-product.dto';
+import { PRODUCT_NOT_FOUND_ERROR } from '../../../src/modules/product/product.constants';
+import { ProductController } from '../../../src/modules/product/product.controller';
+import { ProductService } from '../../../src/modules/product/product.service';
 import { MockProductService } from '../../mocks/product/product.service.mock';
 
 describe('ProductController (unit)', () => {
@@ -158,10 +157,7 @@ describe('ProductController (unit)', () => {
   });
 
   describe('.findByCategory() method tests', () => {
-    const FIND_PRODUCT_DTO: FindByCategoryDto = {
-      category: 'sport',
-      limit: 10,
-    };
+    const CATEGORY = 'sport';
 
     const RESPONSE = 'Find by category response';
 
@@ -170,11 +166,9 @@ describe('ProductController (unit)', () => {
     });
 
     it('Should call productService.findByCategory() method and return updated product', async () => {
-      const result = await productController.findByCategory(FIND_PRODUCT_DTO);
+      const result = await productController.findByCategory(CATEGORY);
 
-      expect(productService.findByCategory).toHaveBeenCalledWith(
-        FIND_PRODUCT_DTO,
-      );
+      expect(productService.findByCategory).toHaveBeenCalledWith(CATEGORY);
       expect(result).toEqual(RESPONSE);
     });
   });

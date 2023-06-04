@@ -1,9 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import { Collection, connect, Types } from 'mongoose';
-import { ProductService } from '../../../src/product/product.service';
-import { ProductModule } from '../../../src/product/product.module';
-import { FindByCategoryDto } from '../../../src/product/dto/find-products.dto';
+import { ProductService } from '../../../src/modules/product/product.service';
+import { ProductModule } from '../../../src/modules/product/product.module';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { MongooseModule } from '@nestjs/mongoose';
 
@@ -196,10 +195,7 @@ describe('ProductService (unit)', () => {
   });
 
   describe('.findByCategory() method tests', () => {
-    const FIND_BY_CATEGORY_DTO: FindByCategoryDto = {
-      category: 'courses',
-      limit: 10,
-    };
+    const CATEGORY = 'courses';
 
     beforeEach(async () => {
       await productsCollection.insertMany([PRODUCT_1, PRODUCT_2]);
@@ -211,7 +207,7 @@ describe('ProductService (unit)', () => {
     });
 
     it('Should return products by received category with their ratings', async () => {
-      const result = await productService.findByCategory(FIND_BY_CATEGORY_DTO);
+      const result = await productService.findByCategory(CATEGORY);
 
       expect(result).toBeInstanceOf(Array);
       expect(result).toHaveLength(1);
@@ -225,7 +221,7 @@ describe('ProductService (unit)', () => {
     it('Should return products by received category with "rating: null" when there are no feedbacks', async () => {
       await feedbacksCollection.deleteMany({});
 
-      const result = await productService.findByCategory(FIND_BY_CATEGORY_DTO);
+      const result = await productService.findByCategory(CATEGORY);
 
       expect(result).toBeInstanceOf(Array);
       expect(result).toHaveLength(1);
@@ -239,7 +235,7 @@ describe('ProductService (unit)', () => {
     it('Should return an empty array when there are no products with this category', async () => {
       await productsCollection.deleteMany({});
 
-      const result = await productService.findByCategory(FIND_BY_CATEGORY_DTO);
+      const result = await productService.findByCategory(CATEGORY);
 
       expect(result).toBeInstanceOf(Array);
       expect(result).toHaveLength(0);
