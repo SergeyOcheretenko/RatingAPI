@@ -11,7 +11,7 @@ import { AddSubscriberDto } from './dto/add-subscriber.dto';
 import { SubscriptionService } from './subscription.service';
 import { MongoIdValidationPipe } from '../../pipes/mongo-id.pipe';
 
-@Controller('subscription')
+@Controller('subscriptions')
 export class SubscriptionController {
   constructor(private readonly subscriptionService: SubscriptionService) {}
 

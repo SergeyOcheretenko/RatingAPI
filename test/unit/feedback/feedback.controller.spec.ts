@@ -68,15 +68,15 @@ describe('FeedbackController (unit)', () => {
     const RESPONSE_FROM_FEEDBACK_SERVICE = 'Response from feedback service';
 
     beforeEach(() => {
-      feedbackService.findByProductId = jest
+      feedbackService.getByProductId = jest
         .fn()
         .mockResolvedValue(RESPONSE_FROM_FEEDBACK_SERVICE);
     });
 
-    it('Should call .findByProductId() method from FeedbackService', async () => {
+    it('Should call .getByProductId() method from FeedbackService', async () => {
       const result = await feedbackController.getByProduct(PRODUCT_ID);
 
-      expect(feedbackService.findByProductId).toHaveBeenCalledWith(PRODUCT_ID);
+      expect(feedbackService.getByProductId).toHaveBeenCalledWith(PRODUCT_ID);
       expect(result).toEqual(RESPONSE_FROM_FEEDBACK_SERVICE);
     });
   });

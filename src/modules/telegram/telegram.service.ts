@@ -46,7 +46,7 @@ export class TelegramService {
     await this.userService.update(user._id.toString(), {
       telegramId: message.chat.id,
     });
-    await this.send(this.config.chatId, 'Telegram id saved');
+    await this.send(message.chat.id, 'Telegram id saved');
   }
 
   async send(telegramId: number | string, message: string) {

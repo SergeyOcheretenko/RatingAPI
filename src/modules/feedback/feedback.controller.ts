@@ -36,15 +36,26 @@ export class FeedbackController {
     return this.feedbackService.getAll();
   }
 
+  @Get(':id')
+  async getById(@Param('id', MongoIdValidationPipe) id: string) {
+    const feedback = await this.feedbackService.getById(id);
+
+    if (!feedback) {
+      throw new HttpException(FEEDBACK_NOT_FOUND_MESSAGE, HttpStatus.NOT_FOUND);
+    }
+
+    return feedback;
+  }
+
   @Get('product/:productId')
   async getByProduct(
     @Param('productId', MongoIdValidationPipe) productId: string,
   ) {
-    return this.feedbackService.findByProductId(productId);
+    return this.feedbackService.getByProductId(productId);
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
   async delete(@Param('id', MongoIdValidationPipe) id: string) {
     const deletedFeedback = await this.feedbackService.delete(id);
 
@@ -55,8 +66,8 @@ export class FeedbackController {
     return deletedFeedback;
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Delete('product/:productId')
+  @UseGuards(AuthGuard('jwt'))
   async deleteByProduct(
     @Param('productId', MongoIdValidationPipe) productId: string,
   ) {

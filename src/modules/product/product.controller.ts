@@ -6,8 +6,8 @@ import {
   HttpCode,
   Inject,
   Param,
+  Patch,
   Post,
-  Put,
   UseGuards,
 } from '@nestjs/common';
 import { HttpStatus } from '@nestjs/common/enums';
@@ -15,7 +15,6 @@ import { HttpException } from '@nestjs/common/exceptions';
 import { AuthGuard } from '@nestjs/passport';
 import { MongoIdValidationPipe } from '../../pipes/mongo-id.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
-import { FindByCategoryDto } from './dto/find-products.dto';
 import { PRODUCT_NOT_FOUND_ERROR } from './product.constants';
 import { ProductService } from './product.service';
 
@@ -26,6 +25,7 @@ export class ProductController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard('jwt'))
   async create(@Body() body: CreateProductDto) {
     return this.productService.create(body);
   }
@@ -46,8 +46,8 @@ export class ProductController {
     return product;
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Delete(':id')
+  @UseGuards(AuthGuard('jwt'))
   async delete(@Param('id', MongoIdValidationPipe) id: string) {
     const product = await this.productService.delete(id);
 
@@ -58,10 +58,11 @@ export class ProductController {
     return product;
   }
 
-  @Put(':id')
+  @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
   async update(
     @Param('id', MongoIdValidationPipe) id: string,
-    @Body() body: CreateProductDto,
+    @Body() body: Partial<CreateProductDto>,
   ) {
     const product = await this.productService.update(id, body);
 
@@ -73,8 +74,8 @@ export class ProductController {
   }
 
   @HttpCode(200)
-  @Post('category')
-  async findByCategory(@Body() body: FindByCategoryDto) {
-    return this.productService.findByCategory(body);
+  @Get('category/:category')
+  async findByCategory(@Param('category') category: string) {
+    return this.productService.findByCategory(category);
   }
 }

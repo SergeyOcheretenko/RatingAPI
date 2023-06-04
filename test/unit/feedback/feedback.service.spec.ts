@@ -164,7 +164,7 @@ describe('FeedbackService (unit)', () => {
     });
 
     it('Should return feedbacks by product id', async () => {
-      const result = await feedbackService.findByProductId(
+      const result = await feedbackService.getByProductId(
         CREATE_FEEDBACK_1.productId,
       );
 
@@ -178,7 +178,7 @@ describe('FeedbackService (unit)', () => {
         productId: FEEDBACK_1.productId,
       });
 
-      const result = await feedbackService.findByProductId(
+      const result = await feedbackService.getByProductId(
         CREATE_FEEDBACK_1.productId,
       );
 

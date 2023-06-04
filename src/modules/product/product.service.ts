@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
-import { FindByCategoryDto } from './dto/find-products.dto';
 import { Product, ProductDocument } from '../../schemas/product.schema';
 
 @Injectable()
@@ -67,7 +66,7 @@ export class ProductService {
     )[0];
   }
 
-  async findByCategory({ category, limit }: FindByCategoryDto) {
+  async findByCategory(category: string) {
     return this.productModel.aggregate([
       {
         $match: {
@@ -78,9 +77,6 @@ export class ProductService {
         $sort: {
           _id: 1,
         },
-      },
-      {
-        $limit: limit,
       },
       {
         $lookup: {
@@ -104,7 +100,10 @@ export class ProductService {
     return this.productModel.findByIdAndDelete(id);
   }
 
-  async update(id: string, productData: CreateProductDto): Promise<Product> {
+  async update(
+    id: string,
+    productData: Partial<CreateProductDto>,
+  ): Promise<Product> {
     return this.productModel.findByIdAndUpdate(id, productData, { new: true });
   }
 }

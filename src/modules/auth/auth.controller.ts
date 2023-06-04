@@ -40,10 +40,6 @@ export class AuthController {
   async login(@Body() body: LoginDto) {
     try {
       const payload = await this.authService.validateUser(body);
-
-      console.log('payload');
-      console.log(payload);
-
       return await this.authService.login(payload);
     } catch (err) {
       if (err instanceof UserNotFoundException) {

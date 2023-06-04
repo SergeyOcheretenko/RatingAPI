@@ -28,7 +28,11 @@ export class FeedbackService {
     return this.feedbackModel.find();
   }
 
-  async findByProductId(productId: string): Promise<Feedback[]> {
+  async getById(id: string): Promise<Feedback | null> {
+    return this.feedbackModel.findById(id);
+  }
+
+  async getByProductId(productId: string): Promise<Feedback[]> {
     return this.feedbackModel.find({
       productId: new Types.ObjectId(productId),
     });
